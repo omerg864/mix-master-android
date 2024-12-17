@@ -7,4 +7,10 @@
     </style>
 
     <style name="Theme.MixMaster" parent="Base.Theme.MixMaster" />
+
+    <style name="CustomOutlinedBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/input_stroke_color</item>
+        <item name="boxStrokeWidth">1dp</item>
+    </style>
+
 </resources>
