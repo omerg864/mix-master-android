@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    >
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/homeFragment"
         android:icon="@drawable/ic_home"
-        android:title="Home" />
+        android:title="@string/home" />
     <item
-        android:id="@+id/navigation_search"
+        android:id="@+id/searchFragment"
         android:icon="@drawable/ic_search"
-        android:title="Search" />
+        android:title="@string/search" />
     <item
-        android:id="@+id/navigation_add"
+        android:id="@+id/createCocktailFragment"
         android:icon="@drawable/ic_add"
-        android:title="Add" />
+        android:title="@string/add" />
     <item
-        android:id="@+id/navigation_cocktails"
+        android:id="@+id/cocktailsFragment"
         android:icon="@drawable/ic_cocktail"
-        android:title="Cocktails" />
+        android:title="@string/cocktails" />
     <item
-        android:id="@+id/navigation_profile"
+        android:id="@+id/profileFragment"
         android:icon="@drawable/ic_person"
-        android:title="Profile" />
+        android:title="@string/profile" />
 </menu>

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 
 class LoginFragment : Fragment() {
@@ -27,7 +28,7 @@ class LoginFragment : Fragment() {
 
         // Handle button click to navigate to FirstFragment
         view.findViewById<View>(R.id.loginButton).setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_createCocktailFragment)
+            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
         }
     }
 }

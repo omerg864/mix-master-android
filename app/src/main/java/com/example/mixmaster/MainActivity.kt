@@ -10,7 +10,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -51,6 +53,11 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView = findViewById(R.id.bottom_bar)
         NavigationUI.setupWithNavController(bottomNavigationView, navController!!)
 
+        bottomNavigationView.setOnApplyWindowInsetsListener { view, insets ->
+            view.setPadding(0, 0, 0, 0)
+            insets
+        }
+
         // Add destination change listener to manage visibility
         navController!!.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
@@ -61,6 +68,15 @@ class MainActivity : AppCompatActivity() {
                     showToolbarAndBottomNavigation()
                 }
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        val navController = findNavController(R.id.main_nav_host)
+        if (navController.currentDestination?.id == R.id.homeFragment) {
+            finish() // Closes the app
+        } else {
+            super.onBackPressed() // Default behavior
         }
     }
 

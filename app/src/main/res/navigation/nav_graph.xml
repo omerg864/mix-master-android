@@ -22,8 +22,8 @@
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
         <action
-            android:id="@+id/action_loginFragment_to_createCocktailFragment"
-            app:destination="@id/createCocktailFragment" />
+            android:id="@+id/action_loginFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -33,5 +33,34 @@
     <fragment
         android:id="@+id/createCocktailFragment"
         android:name="com.example.mixmaster.CreateCocktailFragment"
-        android:label="CreateCocktailFragment" />
+        android:label="CreateCocktailFragment" >
+        <action
+            android:id="@+id/action_createCocktailFragment_to_aiCreateFragment"
+            app:destination="@id/aiCreateFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.mixmaster.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.mixmaster.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="com.example.mixmaster.SearchFragment"
+        android:label="fragment_search"
+        tools:layout="@layout/fragment_search" />
+    <fragment
+        android:id="@+id/cocktailsFragment"
+        android:name="com.example.mixmaster.CocktailsFragment"
+        android:label="fragment_cocktails"
+        tools:layout="@layout/fragment_cocktails" />
+    <fragment
+        android:id="@+id/aiCreateFragment"
+        android:name="com.example.mixmaster.AiCreateFragment"
+        android:label="fragment_ai_create"
+        tools:layout="@layout/fragment_ai_create" />
 </navigation>
