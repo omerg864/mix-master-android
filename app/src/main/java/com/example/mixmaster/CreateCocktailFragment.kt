@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.navigation.fragment.findNavController
+import com.example.mixmaster.databinding.FragmentCreateCocktailBinding
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +24,8 @@ class CreateCocktailFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private var binding: FragmentCreateCocktailBinding? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -34,17 +38,22 @@ class CreateCocktailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_cocktail, container, false)
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentCreateCocktailBinding.inflate(inflater, container, false);
 
-        // Handle button click to navigate to ai fragment
-        view.findViewById<View>(R.id.generateButton).setOnClickListener {
+        val generateButton: Button? = binding?.generateButton
+
+        generateButton?.setOnClickListener {
             findNavController().navigate(R.id.action_createCocktailFragment_to_aiCreateFragment)
         }
+
+        // Inflate the layout for this fragment
+        return binding?.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 
     companion object {
