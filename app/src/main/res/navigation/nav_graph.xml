@@ -57,10 +57,19 @@
         android:id="@+id/cocktailsFragment"
         android:name="com.example.mixmaster.CocktailsFragment"
         android:label="fragment_cocktails"
-        tools:layout="@layout/fragment_cocktails" />
+        tools:layout="@layout/fragment_cocktails" >
+        <action
+            android:id="@+id/action_cocktailsFragment_to_cocktailDisplayFragment"
+            app:destination="@id/cocktailDisplayFragment" />
+    </fragment>
     <fragment
         android:id="@+id/aiCreateFragment"
         android:name="com.example.mixmaster.AiCreateFragment"
         android:label="fragment_ai_create"
         tools:layout="@layout/fragment_ai_create" />
+    <fragment
+        android:id="@+id/cocktailDisplayFragment"
+        android:name="com.example.mixmaster.CocktailDisplayFragment"
+        android:label="fragment_cocktail_display"
+        tools:layout="@layout/fragment_cocktail_display" />
 </navigation>

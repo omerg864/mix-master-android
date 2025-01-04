@@ -14,7 +14,7 @@ class CocktailListAdapter(private val cocktails: List<Cocktail>): RecyclerView.A
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CocktailViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(
-            R.layout.item_holder,
+            R.layout.cocktail_holder,
             parent,
             false
         )
