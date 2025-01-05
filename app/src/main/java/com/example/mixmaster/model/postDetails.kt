@@ -1,6 +1,6 @@
 package com.example.mixmaster.model
 
-data class postDetails(
+data class PostDetails(
     val authorName: String,
     val authorImage: String,
     val postTime: String,

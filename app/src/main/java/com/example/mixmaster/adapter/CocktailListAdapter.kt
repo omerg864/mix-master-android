@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mixmaster.R
 import com.example.mixmaster.model.Cocktail
 
-class CocktailListAdapter(private val cocktails: List<Cocktail>): RecyclerView.Adapter<CocktailViewHolder>() {
+class CocktailListAdapter(private val cocktails: List<Cocktail>?): RecyclerView.Adapter<CocktailViewHolder>() {
 
     var listener: OnItemClickListener? = null
 
