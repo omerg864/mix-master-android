@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Mix Master</string>
+    <string name="welcome_subtitle">Craft cocktails with a community of enthusiasts.</string>
+    <string name="image_description">Cocktail illustrations</string>
+    <string name="get_started">Get started</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="login">Log in</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="or">or</string>
+    <string name="google">Google</string>
+    <string name="join">New here? Join now</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">Register</string>
+    <string name="create_account">Create an account</string>
+    <string name="already_account">Already have an account? Log in</string>
 </resources>
