@@ -11,25 +11,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mixmaster.adapter.OnPostClickListener
 import com.example.mixmaster.adapter.PostListAdapter
+import com.example.mixmaster.databinding.FragmentHomeBinding
 import com.example.mixmaster.model.Post
 
 
 class HomeFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+
+
+    private var binding: FragmentHomeBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+
 
         val posts = listOf(
             Post(
@@ -56,11 +54,11 @@ class HomeFragment : Fragment() {
             )
         )
 
-        val postList = view.findViewById<RecyclerView>(R.id.homeRecyclerView)
-        postList.setHasFixedSize(true)
+        val postList: RecyclerView? = binding?.homeRecyclerView;
+        postList?.setHasFixedSize(true)
 
         val layoutManager = LinearLayoutManager(context)
-        postList.layoutManager = layoutManager
+        postList?.layoutManager = layoutManager
 
         val adapter = PostListAdapter(posts)
         adapter.listener = object : OnPostClickListener {
@@ -68,6 +66,14 @@ class HomeFragment : Fragment() {
                 Log.d("TAG", "On click Activity listener on position ${post?.name}");
             }
         }
-        postList.adapter = adapter
+        postList?.adapter = adapter
+
+
+        return binding?.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 }

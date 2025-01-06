@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mixmaster.adapter.CocktailListAdapter
 import com.example.mixmaster.adapter.OnItemClickListener
+import com.example.mixmaster.databinding.FragmentCocktailsBinding
 import com.example.mixmaster.model.Cocktail
 
 // TODO: Rename parameter arguments, choose names that match
@@ -26,9 +27,7 @@ private const val ARG_PARAM2 = "param2"
 class CocktailsFragment : Fragment() {
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private var binding: FragmentCocktailsBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,11 +35,7 @@ class CocktailsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
 
-        return inflater.inflate(R.layout.fragment_cocktails, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentCocktailsBinding.inflate(inflater, container, false)
 
         val cocktails = listOf(
             Cocktail(
@@ -63,11 +58,11 @@ class CocktailsFragment : Fragment() {
             )
         )
 
-        val cocktailList = view.findViewById<RecyclerView>(R.id.cocktailsRecyclerView)
-        cocktailList.setHasFixedSize(true)
+        val cocktailList: RecyclerView? = binding?.cocktailsRecyclerView
+        cocktailList?.setHasFixedSize(true)
 
         val layoutManager = LinearLayoutManager(context)
-        cocktailList.layoutManager = layoutManager
+        cocktailList?.layoutManager = layoutManager
 
         val adapter = CocktailListAdapter(cocktails)
         adapter.listener = object : OnItemClickListener {
@@ -75,6 +70,13 @@ class CocktailsFragment : Fragment() {
                 Log.d("TAG", "On click Activity listener on position ${cocktail?.name}");
             }
         }
-        cocktailList.adapter = adapter
+        cocktailList?.adapter = adapter
+
+        return binding?.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        binding = null
     }
 }
