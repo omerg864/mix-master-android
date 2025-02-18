@@ -11,6 +11,7 @@
     <string name="or">or</string>
     <string name="google">Google</string>
     <string name="join">New here? Join now</string>
+    <string name="name">Name</string>
     <string name="first_name">First Name</string>
     <string name="last_name">Last Name</string>
     <string name="confirm_password">Confirm Password</string>

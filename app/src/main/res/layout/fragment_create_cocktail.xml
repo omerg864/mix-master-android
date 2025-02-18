@@ -4,12 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
+        android:id="@+id/form"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@id/buttonContainer"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -20,72 +32,83 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/cocktailNameLayout"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:hint="Cocktail Name">
+                android:textColorHint="@color/gray"
+                app:boxStrokeColor="@color/input_stroke_color"
+                app:hintTextColor="@color/white"
+                style="@style/CustomOutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/cocktailNameInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text" />
-
+                    android:hint="Cocktail Name"
+                    android:id="@+id/cocktailNameInput"
+                    android:inputType="text"
+                    android:textColor="@color/white" />
             </com.google.android.material.textfield.TextInputLayout>
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/descriptionLayout"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Description">
+                android:textColorHint="@color/gray"
+                app:boxStrokeColor="@color/input_stroke_color"
+                app:hintTextColor="@color/white"
+                style="@style/CustomOutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/descriptionInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="top"
+                    android:hint="Description"
+                    android:id="@+id/descriptionInput"
                     android:inputType="textMultiLine"
-                    android:minLines="3" />
-
+                    android:minLines="3"
+                    android:textColor="@color/white" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/ingredientsLayout"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Ingredients">
+                android:textColorHint="@color/gray"
+                app:boxStrokeColor="@color/input_stroke_color"
+                app:hintTextColor="@color/white"
+                style="@style/CustomOutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/ingredientsInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="top"
+                    android:hint="Ingredients"
+                    android:id="@+id/ingredientsInput"
                     android:inputType="textMultiLine"
-                    android:minLines="3" />
-
+                    android:minLines="3"
+                    android:textColor="@color/white" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/instructionsLayout"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:hint="Instructions">
+                android:textColorHint="@color/gray"
+                app:boxStrokeColor="@color/input_stroke_color"
+                app:hintTextColor="@color/white"
+                style="@style/CustomOutlinedBox">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/instructionsInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="top"
+                    android:hint="Instructions"
+                    android:id="@+id/instructionsInput"
                     android:inputType="textMultiLine"
-                    android:minLines="3" />
-
+                    android:minLines="3"
+                    android:textColor="@color/white" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textview.MaterialTextView
@@ -95,14 +118,26 @@
                 android:text="Upload Image (optional)"
                 android:textAppearance="@style/TextAppearance.Material3.BodyLarge" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/imageUploadContainer"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginBottom="24dp"
-                app:cardElevation="0dp"
-                app:strokeColor="?attr/colorOutline"
-                app:strokeWidth="1dp" />
+            <ImageButton
+                android:id="@+id/takePictureButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:src="@drawable/take_photo"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="428dp"
+                android:layout_height="278dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/takePictureButton"
+                app:layout_constraintBottom_toTopOf="@+id/generateButton"
+                />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/generateButton"
@@ -113,41 +148,15 @@
                 app:icon="@drawable/ic_auto_fix"
                 style="@style/Widget.Material3.Button.Icon" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/publishButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="Publish" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/buttonContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:orientation="horizontal"
-        android:gravity="end"
-        android:background="@color/grey"
-        android:elevation="8dp"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/cancelButton"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/publishButton"
-            android:layout_marginEnd="8dp"
-            android:text="Cancel" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/publishButton"
-            android:layout_width="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/cancelButton"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_height="wrap_content"
-            android:text="Publish" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

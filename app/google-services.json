@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "688682600971",
+    "project_id": "mix-master-d27e0",
+    "storage_bucket": "mix-master-d27e0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:688682600971:android:c39d4dbd497326108d150e",
+        "android_client_info": {
+          "package_name": "com.example.mixmaster"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXwr_cqUjgcC46TEBdVkztWAHDNVHcqOo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
