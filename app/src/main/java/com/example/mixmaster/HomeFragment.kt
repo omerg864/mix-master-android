@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,6 +24,7 @@ class HomeFragment : Fragment() {
     private var binding: FragmentHomeBinding? = null
     private var viewModel: HomeFragmentViewModel? = null
     private var adapter: PostListAdapter? = null
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,31 +34,6 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[HomeFragmentViewModel::class.java]
 
-
-        /*val posts = listOf(
-            PostPreview(
-                id = "1",
-                name = "Margarita Bliss",
-                authorName = "Samantha Carpenter",
-                authorImage = "https://example.com/profile1.jpg",
-                postTime = "1 min. ago",
-                images = listOf("https://images.immediate.co.uk/production/volatile/sites/30/2022/06/Tequila-sunrise-fb8b3ab.jpg?quality=90&resize=556,505"),
-                description = "Share your favorite cocktail recipes with friends",
-                likes = 256,
-                comments = 45
-            ),
-            PostPreview(
-                id = "2",
-                name = "Tropical Sunset",
-                authorName = "Cocktail",
-                authorImage = "https://example.com/profile2.jpg",
-                postTime = "3 hours ago",
-                images = listOf("https://images.immediate.co.uk/production/volatile/sites/30/2022/06/Tequila-sunrise-fb8b3ab.jpg?quality=90&resize=556,505"),
-                description = "Indulge in the art of cocktail making",
-                likes = 256,
-                comments = 45
-            )
-        )*/
 
         val postList: RecyclerView? = binding?.homeRecyclerView;
         postList?.setHasFixedSize(true)
@@ -75,22 +52,6 @@ class HomeFragment : Fragment() {
 
         return binding?.root
     }
-
-    /*fun convertPostsToPreviews(posts: List<Post>?): List<PostPreview> {
-        return posts?.map { post ->
-            PostPreview(
-                id = post.id,
-                name = post.name,
-                authorName = post.authorName,
-                authorImage = post.authorImage,
-                postTime = post.postTime,
-                images = listOf(post.image), // Wrapping single image in a list
-                description = post.description,
-                likes = post.likes.size, // Getting the count of likes
-                comments = post.comments.size // Getting the count of comments
-            )
-        } ?: emptyList()
-    }*/
 
     override fun onDestroy() {
         super.onDestroy()

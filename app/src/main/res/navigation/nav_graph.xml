@@ -49,4 +49,9 @@
         android:name="com.example.mixmaster.CocktailDisplayFragment"
         android:label="fragment_cocktail_display"
         tools:layout="@layout/fragment_cocktail_display" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.mixmaster.SettingsFragment"
+        android:label="Settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

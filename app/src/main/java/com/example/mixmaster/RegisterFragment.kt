@@ -6,13 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.mixmaster.databinding.FragmentRegisterBinding
 
 class RegisterFragment : Fragment() {
 
     var binding: FragmentRegisterBinding? = null
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,6 +31,12 @@ class RegisterFragment : Fragment() {
             findNavController().popBackStack()
         }
         binding?.registerButton?.setOnClickListener(::onRegisterButtonClick)
+
+        authViewModel.user.observe(viewLifecycleOwner, { user ->
+            if (user != null) {
+                goToHomeFragment()
+            }
+        })
 
         return binding?.root
     }
@@ -45,8 +55,7 @@ class RegisterFragment : Fragment() {
 
         if (name.isNotEmpty() && email.isNotEmpty() && password1.isNotEmpty() && password2.isNotEmpty()) {
             if (password1 == password2) {
-                // Register user with AuthModel
-
+                authViewModel.signUp(email, password1, name)
             } else {
                 // Passwords don't match, display an error message
                 Toast.makeText(

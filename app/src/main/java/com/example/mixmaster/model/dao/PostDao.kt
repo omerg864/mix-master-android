@@ -16,6 +16,9 @@ interface PostDao {
     @Query("SELECT * FROM Post WHERE id =:id")
     fun getPostById(id: String): Post
 
+    @Query("SELECT * FROM Post WHERE author =:author")
+    fun getPostsByAuthor(author: String): List<Post>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPosts(vararg posts: Post)
 
