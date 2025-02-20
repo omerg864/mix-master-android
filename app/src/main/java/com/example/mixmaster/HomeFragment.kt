@@ -15,6 +15,8 @@ import com.example.mixmaster.adapter.PostListAdapter
 import com.example.mixmaster.databinding.FragmentHomeBinding
 import com.example.mixmaster.model.Model
 import com.example.mixmaster.model.Post
+import com.example.mixmaster.viewModel.AuthViewModel
+import com.example.mixmaster.viewModel.PostViewModel
 
 class HomeFragment : Fragment() {
 
@@ -22,7 +24,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: HomeFragmentViewModel
+    private lateinit var viewModel: PostViewModel
     private lateinit var adapter: PostListAdapter
     // Use AuthViewModel only to obtain the user id.
     private val authViewModel: AuthViewModel by activityViewModels()
@@ -36,7 +38,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this)[HomeFragmentViewModel::class.java]
+        viewModel = ViewModelProvider(this)[PostViewModel::class.java]
 
         // Setup RecyclerView for posts.
         binding.homeRecyclerView.apply {
