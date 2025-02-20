@@ -17,7 +17,7 @@ interface CocktailApiService {
     @POST("api/ai")
     suspend fun getAiCocktail(
         @Body request: AiRequest,
-    ): Response<Post>
+    ): Response<AiCocktailResponse>
 
     // GET /api/db/random returns a list of posts.
     @Headers("Accept: application/json")
@@ -30,5 +30,5 @@ interface CocktailApiService {
     @GET("api/db/{id}")
     suspend fun getCocktailById(
         @Path("id") id: String
-    ): Response<Post>
+    ): Response<AiCocktailResponse>
 }
