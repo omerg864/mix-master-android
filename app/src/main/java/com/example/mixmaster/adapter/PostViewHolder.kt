@@ -1,6 +1,5 @@
 package com.example.mixmaster.adapter
 
-import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -8,8 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mixmaster.R
-import com.google.android.material.button.MaterialButton
 import com.example.mixmaster.model.Post
+import com.google.android.material.button.MaterialButton
 import de.hdodenhof.circleimageview.CircleImageView
 
 
@@ -17,10 +16,15 @@ interface OnPostClickListener {
     fun onItemClick(post: Post?)
 }
 
+interface onUserClickListener {
+    fun onItemClick(id: String?)
+}
+
 
 class PostViewHolder(
     itemView: View,
-    listener: OnPostClickListener?
+    listener: OnPostClickListener?,
+    authorListener: onUserClickListener?
 ): RecyclerView.ViewHolder(itemView) {
     private var post: Post? = null
 
@@ -32,14 +36,17 @@ class PostViewHolder(
     private val postDescription: TextView = itemView.findViewById(R.id.postDescription)
     private val likeButton: MaterialButton = itemView.findViewById(R.id.likeButton)
     private val commentButton: MaterialButton = itemView.findViewById(R.id.commentButton)
-    private val moreButton: ImageButton = itemView.findViewById(R.id.moreButton)
 
     init {
 
 
-        moreButton.setOnClickListener {
+        postImage.setOnClickListener {
             // Handle more button click
             listener?.onItemClick(post)
+        }
+
+        authorName.setOnClickListener {
+            authorListener?.onItemClick(post?.author)
         }
 
         likeButton.setOnClickListener {
@@ -52,12 +59,13 @@ class PostViewHolder(
     }
 
     fun bind(post: Post?, position: Int) {
+        this.post = post
         postName.text = post?.name
         authorName.text = post?.authorName
-        postTime.text = post?.postTime
+        postTime.text = ""
         postDescription.text = post?.description
-        likeButton.text = post?.likes.toString()
-        commentButton.text = post?.comments.toString()
+        likeButton.text = "0"
+        commentButton.text = "0"
 
         // Load images using Glide
         Glide.with(itemView.context)
@@ -66,8 +74,8 @@ class PostViewHolder(
             .into(authorImage)
 
         Glide.with(itemView.context)
-            .load(post?.images?.get(0))
-            .centerCrop()
+            .load(post?.image)
+            .placeholder(R.drawable.cocktails)
             .into(postImage)
     }
 }

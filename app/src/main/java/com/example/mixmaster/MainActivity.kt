@@ -1,19 +1,21 @@
 package com.example.mixmaster
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.example.mixmaster.viewModel.AuthViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -21,10 +23,13 @@ class MainActivity : AppCompatActivity() {
     private var navController: NavController? = null
     private lateinit var toolbar: Toolbar
     private lateinit var bottomNavigationView: BottomNavigationView
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // auth check
+        observeUserAuthentication()
         setContentView(R.layout.activity_main)
 
         // Handle system insets for edge-to-edge UI
@@ -57,37 +62,18 @@ class MainActivity : AppCompatActivity() {
             view.setPadding(0, 0, 0, 0)
             insets
         }
+    }
 
-        // Add destination change listener to manage visibility
-        navController!!.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.welcomeFragment, R.id.loginFragment, R.id.registerFragment -> {
-                    hideToolbarAndBottomNavigation()
-                }
-                else -> {
-                    showToolbarAndBottomNavigation()
-                }
+    private fun observeUserAuthentication() {
+        // Observe the authentication state
+        authViewModel.user.observe(this, Observer { firebaseUser ->
+            Log.d("TAG", "User: $firebaseUser")
+            if (firebaseUser == null) {
+                // User is not authenticated. Navigate to the Auth (login) screen.
+                startActivity(Intent(this, AuthActivity::class.java))
+                finish() // Close MainActivity to prevent access without login
             }
-        }
-    }
-
-    override fun onBackPressed() {
-        val navController = findNavController(R.id.main_nav_host)
-        if (navController.currentDestination?.id == R.id.homeFragment) {
-            finish() // Closes the app
-        } else {
-            super.onBackPressed() // Default behavior
-        }
-    }
-
-    private fun showToolbarAndBottomNavigation() {
-        toolbar.visibility = android.view.View.VISIBLE
-        bottomNavigationView.visibility = android.view.View.VISIBLE
-    }
-
-    private fun hideToolbarAndBottomNavigation() {
-        toolbar.visibility = android.view.View.GONE
-        bottomNavigationView.visibility = android.view.View.GONE
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -96,10 +82,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> navController?.popBackStack()
-            else -> navController?.let { NavigationUI.onNavDestinationSelected(item, it) }
+        return when (item.itemId) {
+            android.R.id.home -> {
+                navController?.popBackStack()
+                true
+            }
+            R.id.action_settings -> {
+                if (navController?.currentDestination?.id == R.id.settingsFragment) {
+                    return false
+                }
+                // Directly navigate to the settings fragment
+                navController?.navigate(R.id.settingsFragment)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return true
     }
 }
