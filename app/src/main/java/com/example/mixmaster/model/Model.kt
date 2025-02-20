@@ -181,7 +181,7 @@ class Model private constructor() {
     }
 
 
-    fun signUp(email: String, password: String, name: String, bitmap: Bitmap?, callback: (FirebaseUser?, String?) -> Unit) {
+    fun signUp(email: String, password: String, name: String, bio: String, bitmap: Bitmap?, callback: (FirebaseUser?, String?) -> Unit) {
         firebaseModel.signUp(email, password, name) { firebaseUser, error ->
             if (firebaseUser != null) {
                 if (bitmap != null) {
@@ -189,7 +189,7 @@ class Model private constructor() {
                     uploadImageToCloudinary(bitmap, firebaseUser.uid, onSuccess = { imageUrl ->
                         Log.d("TAG", "Image uploaded to Cloudinary: $imageUrl")
                         // Save user data to Firestore with the Cloudinary image URL.
-                        firebaseModel.saveUser(firebaseUser, name, imageUrl) { success, saveError ->
+                        firebaseModel.saveUser(firebaseUser, name, bio, imageUrl) { success, saveError ->
                             if (success) {
                                 // Save the user locally.
                                 roomExecutor.execute {
@@ -203,7 +203,7 @@ class Model private constructor() {
                     }, onError = { errMsg ->
                         Log.e("TAG", "Image upload to Cloudinary failed: $errMsg")
                         // If Cloudinary upload fails, save the user without an image.
-                        firebaseModel.saveUser(firebaseUser, name, "") { success, saveError ->
+                        firebaseModel.saveUser(firebaseUser, name, bio, "") { success, saveError ->
                             if (success) {
                                 roomExecutor.execute {
                                     database.userDao().insertUsers(User(firebaseUser.uid, name, ""))
@@ -216,7 +216,7 @@ class Model private constructor() {
                     })
                 } else {
                     // No image provided; save user with an empty image field.
-                    firebaseModel.saveUser(firebaseUser, name, "") { success, saveError ->
+                    firebaseModel.saveUser(firebaseUser, name, bio, "") { success, saveError ->
                         if (success) {
                             roomExecutor.execute {
                                 database.userDao().insertUsers(User(firebaseUser.uid, name, ""))

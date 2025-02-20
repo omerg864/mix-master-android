@@ -76,10 +76,12 @@ class ProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // Reset flags and show the progress bar.
+        // Reset flags
         postsLoaded = false
         userLoaded = false
+        // Hide the main content and show the progress bar
         binding.progressBar.visibility = View.VISIBLE
+        binding.scrollView.visibility = View.GONE
 
         getAllPosts()
         getUserDetails()
@@ -87,7 +89,9 @@ class ProfileFragment : Fragment() {
 
     private fun checkIfAllRequestsFinished() {
         if (postsLoaded && userLoaded) {
+            // Hide the progress bar and show the main content once all data is loaded
             binding.progressBar.visibility = View.GONE
+            binding.scrollView.visibility = View.VISIBLE
         }
     }
 
@@ -97,6 +101,7 @@ class ProfileFragment : Fragment() {
                 activity?.runOnUiThread {
                     Log.d("ProfileFragment", "Fetched user: $userObj")
                     binding.userName.text = userObj?.name ?: "Unknown"
+                    binding.userBio.text = userObj?.bio ?: ""
                     if (!userObj?.image.isNullOrEmpty()) {
                         Glide.with(this).load(userObj?.image).into(binding.profileImage)
                     }

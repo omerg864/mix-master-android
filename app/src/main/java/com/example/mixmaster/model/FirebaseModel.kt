@@ -106,11 +106,12 @@ class FirebaseModel {
     // --------------------
     // User Data Functions
     // --------------------
-    fun saveUser(user: FirebaseUser, name: String, image: String?, callback: (Boolean, String?) -> Unit) {
+    fun saveUser(user: FirebaseUser, name: String, bio: String, image: String?, callback: (Boolean, String?) -> Unit) {
         // Define the user data you want to store.
         val userData = hashMapOf(
             "id" to user.uid,
             "image" to image,
+            "bio" to bio,
             "name" to name,
         )
 

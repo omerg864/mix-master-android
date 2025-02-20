@@ -92,6 +92,7 @@ class RegisterFragment : Fragment() {
     fun onRegisterButtonClick(view: View) {
         val name = binding?.nameEditText?.text.toString();
         val email = binding?.emailEditText?.text.toString()
+        val bio = binding?.bioInput?.text.toString()
         val password1 = binding?.passwordEditText?.text.toString()
         val password2 = binding?.confirmPasswordEditText?.text.toString()
 
@@ -104,10 +105,10 @@ class RegisterFragment : Fragment() {
                     binding?.signUpImageView?.buildDrawingCache()
                     val bitmap = (binding?.signUpImageView?.drawable as BitmapDrawable).bitmap
                     Log.d("TAG", "Bitmap: $bitmap")
-                    authViewModel.signUp(email, password1, name, bitmap)
+                    authViewModel.signUp(email, password1, name, bio, bitmap)
                 } else {
                     Log.d("TAG", "No image selected")
-                    authViewModel.signUp(email, password1, name, null)
+                    authViewModel.signUp(email, password1, name, bio, null)
                 }
             } else {
                 // Passwords don't match, display an error message

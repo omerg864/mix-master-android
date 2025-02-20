@@ -39,8 +39,8 @@ class AuthViewModel : ViewModel() {
     }
 
     // Sign up with email, password, and name.
-    fun signUp(email: String, password: String, name: String, bitmap: Bitmap?) {
-        model.signUp(email, password, name, bitmap) { firebaseUser, errorMessage ->
+    fun signUp(email: String, password: String, name: String, bio: String, bitmap: Bitmap?) {
+        model.signUp(email, password, name, bio, bitmap) { firebaseUser, errorMessage ->
             if (firebaseUser != null) {
                 Log.d("AuthViewModel", "Sign up successful for user: ${firebaseUser.uid}")
                 // Update the FirebaseUser profile with the provided display name.
