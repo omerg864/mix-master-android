@@ -46,7 +46,7 @@ class SearchFragment : Fragment() {
 
         binding = FragmentSearchBinding.inflate(inflater, container, false);
 
-        val cocktails = listOf(
+        /*val cocktails = listOf(
             Cocktail(
                 "1",
                 "Margarita Bliss",
@@ -78,7 +78,7 @@ class SearchFragment : Fragment() {
                 Log.d("TAG", "On click Activity listener on position ${cocktail?.name}");
             }
         }
-        cocktailList?.adapter = adapter
+        cocktailList?.adapter = adapter*/
 
 
         return binding?.root
