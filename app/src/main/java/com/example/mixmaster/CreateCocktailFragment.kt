@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.mixmaster.databinding.FragmentCreateCocktailBinding
@@ -20,6 +21,7 @@ import java.util.UUID
 class CreateCocktailFragment : Fragment() {
 
     private var cameraLauncher: ActivityResultLauncher<Void?>? = null
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     private var binding: FragmentCreateCocktailBinding? = null
     private var didSetProfileImage = false
@@ -59,6 +61,7 @@ class CreateCocktailFragment : Fragment() {
             id = UUID.randomUUID().toString(),
             image = "",
             description = binding?.descriptionInput?.text?.toString() ?: "",
+            author = authViewModel.user.value?.uid.toString()
         )
 
         binding?.form?.visibility = View.GONE

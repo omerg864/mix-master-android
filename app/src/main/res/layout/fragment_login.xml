@@ -142,21 +142,6 @@
         app:layout_constraintTop_toBottomOf="@id/loginButton" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/googleButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:backgroundTint="@color/white"
-        android:padding="12dp"
-        android:text="@string/google"
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        app:cornerRadius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/orText" />
-
-    <com.google.android.material.button.MaterialButton
         android:id="@+id/joinButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -169,7 +154,7 @@
         app:cornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/googleButton" />
+        app:layout_constraintTop_toBottomOf="@id/orText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

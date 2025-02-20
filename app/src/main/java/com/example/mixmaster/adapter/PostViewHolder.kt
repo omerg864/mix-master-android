@@ -1,6 +1,5 @@
 package com.example.mixmaster.adapter
 
-import android.util.Log
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -53,7 +52,7 @@ class PostViewHolder(
 
     fun bind(post: Post?, position: Int) {
         postName.text = post?.name
-        authorName.text = post?.author
+        authorName.text = post?.authorName
         postTime.text = ""
         postDescription.text = post?.description
         likeButton.text = "0"
@@ -61,8 +60,13 @@ class PostViewHolder(
 
         // Load images using Glide
         Glide.with(itemView.context)
-            .load(post?.image)
+            .load(post?.authorImage)
             .placeholder(R.drawable.cocktails)
             .into(authorImage)
+
+        Glide.with(itemView.context)
+            .load(post?.image)
+            .placeholder(R.drawable.cocktails)
+            .into(postImage)
     }
 }

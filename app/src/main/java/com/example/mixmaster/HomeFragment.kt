@@ -8,9 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.mixmaster.adapter.OnPostClickListener
 import com.example.mixmaster.adapter.PostListAdapter
 import com.example.mixmaster.databinding.FragmentHomeBinding
@@ -19,60 +18,95 @@ import com.example.mixmaster.model.Post
 
 class HomeFragment : Fragment() {
 
+    // Use a backing property for binding
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
 
-
-    private var binding: FragmentHomeBinding? = null
-    private var viewModel: HomeFragmentViewModel? = null
-    private var adapter: PostListAdapter? = null
+    private lateinit var viewModel: HomeFragmentViewModel
+    private lateinit var adapter: PostListAdapter
+    // Use AuthViewModel only to obtain the user id.
     private val authViewModel: AuthViewModel by activityViewModels()
+
+    // Flags to track when each request finishes
+    private var postsLoaded = false
+    private var userLoaded = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[HomeFragmentViewModel::class.java]
 
-
-        val postList: RecyclerView? = binding?.homeRecyclerView;
-        postList?.setHasFixedSize(true)
-
-        val layoutManager = LinearLayoutManager(context)
-        postList?.layoutManager = layoutManager
-
-        adapter = PostListAdapter(viewModel?.posts)
-        adapter!!.listener = object : OnPostClickListener {
+        // Setup RecyclerView for posts.
+        binding.homeRecyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+        }
+        // Initialize adapter with an empty list
+        adapter = PostListAdapter(emptyList())
+        adapter.listener = object : OnPostClickListener {
             override fun onItemClick(post: Post?) {
-                Log.d("TAG", "On click Activity listener on position ${post?.name}");
+                Log.d("TAG", "On click listener on post: ${post?.name}")
             }
         }
-        postList?.adapter = adapter
+        binding.homeRecyclerView.adapter = adapter
 
-
-        return binding?.root
+        return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onResume() {
         super.onResume()
+        // Reset flags and show the progress bar
+        postsLoaded = false
+        userLoaded = false
+        binding.progressBar.visibility = View.VISIBLE
+
         getAllPosts()
+        getUserDetails()
+    }
+
+    private fun checkIfAllRequestsFinished() {
+        if (postsLoaded && userLoaded) {
+            binding.progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun getUserDetails() {
+        val user = authViewModel.user.value
+        if (user != null) {
+            Model.shared.getUser(user.uid) { userObj ->
+                activity?.runOnUiThread {
+                    Log.d("TAG", "Fetched user: $userObj")
+                    binding.userNameTextView.text = userObj?.name ?: "Unknown"
+                    if (userObj?.image != "") {
+                        Glide.with(this).load(userObj?.image).into(binding.profileImage)
+                    }
+                    userLoaded = true
+                    checkIfAllRequestsFinished()
+                }
+            }
+        } else {
+            Log.d("TAG", "User is not signed in")
+            userLoaded = true
+            checkIfAllRequestsFinished()
+        }
     }
 
     private fun getAllPosts() {
-
-        binding?.progressBar?.visibility = View.VISIBLE
-
-        Model.shared.getAllPosts {
-            viewModel?.set(posts = it)
-            adapter?.set(it)
-            adapter?.notifyDataSetChanged()
-
-            binding?.progressBar?.visibility = View.GONE
+        Model.shared.getAllPosts { posts ->
+            activity?.runOnUiThread {
+                viewModel.set(posts = posts)
+                adapter.set(posts)
+                adapter.notifyDataSetChanged()
+                postsLoaded = true
+                checkIfAllRequestsFinished()
+            }
         }
     }
 }

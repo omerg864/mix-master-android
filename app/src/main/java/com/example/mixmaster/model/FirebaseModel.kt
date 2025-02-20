@@ -80,16 +80,7 @@ class FirebaseModel {
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
-                    if (user != null) {
-                        // Save additional user information in Firestore
-                        saveUser(user, name) { success, errorMessage ->
-                            if (success) {
-                                callback(user, null)
-                            } else {
-                                callback(null, errorMessage)
-                            }
-                        }
-                    }
+                    callback(user, null)
                 } else {
                     callback(null, task.exception?.message)
                 }
@@ -115,13 +106,12 @@ class FirebaseModel {
     // --------------------
     // User Data Functions
     // --------------------
-    fun saveUser(user: FirebaseUser, name: String, callback: (Boolean, String?) -> Unit) {
+    fun saveUser(user: FirebaseUser, name: String, image: String?, callback: (Boolean, String?) -> Unit) {
         // Define the user data you want to store.
         val userData = hashMapOf(
-            "uid" to user.uid,
-            "email" to user.email,
+            "id" to user.uid,
+            "image" to image,
             "name" to name,
-            "createdAt" to System.currentTimeMillis()
         )
 
         // Save the data in the "users" collection with the document id as the user's uid.

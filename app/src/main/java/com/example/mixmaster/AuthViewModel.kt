@@ -1,5 +1,7 @@
 package com.example.mixmaster
 
+import android.graphics.Bitmap
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,76 +20,46 @@ class AuthViewModel : ViewModel() {
     }
     val user: LiveData<FirebaseUser?> = _user
 
-    // LiveData holding the user's display name.
-    private val _displayName = MutableLiveData<String?>()
-    val displayName: LiveData<String?> = _displayName
-
-    // LiveData holding the user's image URL.
-    private val _userImage = MutableLiveData<String?>()
-    val userImage: LiveData<String?> = _userImage
-
     // LiveData for error messages.
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
 
-    init {
-        // If the user is already signed in, initialize the display name and image.
-        FirebaseAuth.getInstance().currentUser?.let { firebaseUser ->
-            _displayName.value = firebaseUser.displayName
-            _userImage.value = firebaseUser.photoUrl?.toString()
-        }
-    }
 
     // Sign in with email and password.
     fun signIn(email: String, password: String) {
         model.signIn(email, password) { firebaseUser, errorMessage ->
             if (firebaseUser != null) {
+                Log.d("AuthViewModel", "Sign in successful for user: ${firebaseUser.uid}")
                 _user.postValue(firebaseUser)
-                _displayName.postValue(firebaseUser.displayName)
-                _userImage.postValue(firebaseUser.photoUrl?.toString())
-                // Optionally fetch additional user details from your model.
-                fetchUserDetails(firebaseUser.uid)
             } else {
+                Log.e("AuthViewModel", "Sign in failed: ${errorMessage ?: "Unknown error"}")
                 _error.postValue(errorMessage ?: "Unknown error during sign in.")
             }
         }
     }
 
     // Sign up with email, password, and name.
-    fun signUp(email: String, password: String, name: String) {
-        model.signUp(email, password, name) { firebaseUser, errorMessage ->
+    fun signUp(email: String, password: String, name: String, bitmap: Bitmap?) {
+        model.signUp(email, password, name, bitmap) { firebaseUser, errorMessage ->
             if (firebaseUser != null) {
-                // Update the FirebaseUser profile with the display name.
+                Log.d("AuthViewModel", "Sign up successful for user: ${firebaseUser.uid}")
+                // Update the FirebaseUser profile with the provided display name.
                 val profileUpdates = UserProfileChangeRequest.Builder()
                     .setDisplayName(name)
                     .build()
-
                 firebaseUser.updateProfile(profileUpdates).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        // After profile update, update LiveData.
+                        Log.d("AuthViewModel", "User profile updated successfully.")
                         _user.postValue(firebaseUser)
-                        _displayName.postValue(firebaseUser.displayName)
-                        _userImage.postValue(firebaseUser.photoUrl?.toString())
-                        // Optionally fetch additional details from your model.
-                        fetchUserDetails(firebaseUser.uid)
                     } else {
+                        val exceptionMessage = task.exception?.message ?: "Profile update failed"
+                        Log.e("AuthViewModel", exceptionMessage)
                         _error.postValue("Failed to update user profile.")
                     }
                 }
             } else {
+                Log.e("AuthViewModel", "Sign up failed: ${errorMessage ?: "Unknown error"}")
                 _error.postValue(errorMessage ?: "Unknown error during sign up.")
-            }
-        }
-    }
-
-    // Fetch additional user details from your model (if needed).
-    private fun fetchUserDetails(userId: String) {
-        model.getUser(userId) { userData ->
-            if (userData != null) {
-                _displayName.postValue(userData.name)
-                _userImage.postValue(userData.image)
-            } else {
-                _error.postValue("Failed to load user details.")
             }
         }
     }
@@ -95,8 +67,7 @@ class AuthViewModel : ViewModel() {
     // Sign out the current user.
     fun signOut() {
         model.signOut()
+        Log.d("AuthViewModel", "User signed out.")
         _user.postValue(null)
-        _displayName.postValue(null)
-        _userImage.postValue(null)
     }
 }
