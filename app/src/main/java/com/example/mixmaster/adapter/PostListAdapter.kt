@@ -6,9 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.mixmaster.R
 import com.example.mixmaster.model.Post
 
-class PostListAdapter(private val posts: List<Post>?): RecyclerView.Adapter<PostViewHolder>() {
+class PostListAdapter(private var posts: List<Post>?): RecyclerView.Adapter<PostViewHolder>() {
 
     var listener: OnPostClickListener? = null
+
+    fun set(posts: List<Post>?) {
+        this.posts = posts
+    }
 
     override fun getItemCount(): Int = posts?.size ?: 0
 

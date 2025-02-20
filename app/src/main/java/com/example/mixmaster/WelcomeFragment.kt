@@ -23,7 +23,7 @@ class WelcomeFragment : Fragment() {
         val getStartedButton: Button? = binding?.getStartedButton
 
         getStartedButton?.setOnClickListener {
-            findNavController().navigate(R.id.action_welcomeFragment_to_loginFragment)
+            findNavController().navigate(R.id.action_welcomeFragment2_to_loginFragment2)
         }
 
         return binding?.root
