@@ -50,14 +50,6 @@
                     android:textSize="12sp" />
             </LinearLayout>
 
-            <ImageButton
-                android:id="@+id/moreButton"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_more"
-                app:tint="@color/white" />
-
         </LinearLayout>
 
         <!-- Post Image -->
