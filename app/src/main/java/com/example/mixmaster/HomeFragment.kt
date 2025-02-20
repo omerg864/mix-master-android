@@ -6,74 +6,109 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.mixmaster.adapter.OnPostClickListener
 import com.example.mixmaster.adapter.PostListAdapter
 import com.example.mixmaster.databinding.FragmentHomeBinding
+import com.example.mixmaster.model.Model
 import com.example.mixmaster.model.Post
-
+import com.example.mixmaster.viewModel.AuthViewModel
+import com.example.mixmaster.viewModel.PostViewModel
 
 class HomeFragment : Fragment() {
 
+    // Use a backing property for binding
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
 
+    private lateinit var viewModel: PostViewModel
+    private lateinit var adapter: PostListAdapter
+    // Use AuthViewModel only to obtain the user id.
+    private val authViewModel: AuthViewModel by activityViewModels()
 
-    private var binding: FragmentHomeBinding? = null
+    // Flags to track when each request finishes
+    private var postsLoaded = false
+    private var userLoaded = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this)[PostViewModel::class.java]
 
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-
-        val posts = listOf(
-            Post(
-                id = 1,
-                name = "Margarita Bliss",
-                authorName = "Samantha Carpenter",
-                authorImage = "https://example.com/profile1.jpg",
-                postTime = "1 min. ago",
-                images = listOf("https://images.immediate.co.uk/production/volatile/sites/30/2022/06/Tequila-sunrise-fb8b3ab.jpg?quality=90&resize=556,505"),
-                description = "Share your favorite cocktail recipes with friends",
-                likes = 256,
-                comments = 45
-            ),
-            Post(
-                id = 2,
-                name = "Tropical Sunset",
-                authorName = "Cocktail",
-                authorImage = "https://example.com/profile2.jpg",
-                postTime = "3 hours ago",
-                images = listOf("https://images.immediate.co.uk/production/volatile/sites/30/2022/06/Tequila-sunrise-fb8b3ab.jpg?quality=90&resize=556,505"),
-                description = "Indulge in the art of cocktail making",
-                likes = 256,
-                comments = 45
-            )
-        )
-
-        val postList: RecyclerView? = binding?.homeRecyclerView;
-        postList?.setHasFixedSize(true)
-
-        val layoutManager = LinearLayoutManager(context)
-        postList?.layoutManager = layoutManager
-
-        val adapter = PostListAdapter(posts)
+        // Setup RecyclerView for posts.
+        binding.homeRecyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+        }
+        // Initialize adapter with an empty list
+        adapter = PostListAdapter(emptyList())
         adapter.listener = object : OnPostClickListener {
             override fun onItemClick(post: Post?) {
-                Log.d("TAG", "On click Activity listener on position ${post?.name}");
+                Log.d("TAG", "On click listener on post: ${post?.name}")
             }
         }
-        postList?.adapter = adapter
+        binding.homeRecyclerView.adapter = adapter
 
-
-        return binding?.root
+        return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reset flags and show the progress bar
+        postsLoaded = false
+        userLoaded = false
+        binding.progressBar.visibility = View.VISIBLE
+
+        getAllPosts()
+        getUserDetails()
+    }
+
+    private fun checkIfAllRequestsFinished() {
+        if (postsLoaded && userLoaded) {
+            binding.progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun getUserDetails() {
+        val user = authViewModel.user.value
+        if (user != null) {
+            Model.shared.getUser(user.uid) { userObj ->
+                activity?.runOnUiThread {
+                    Log.d("TAG", "Fetched user: $userObj")
+                    binding.userNameTextView.text = userObj?.name ?: "Unknown"
+                    if (userObj?.image != "") {
+                        Glide.with(this).load(userObj?.image).into(binding.profileImage)
+                    }
+                    userLoaded = true
+                    checkIfAllRequestsFinished()
+                }
+            }
+        } else {
+            Log.d("TAG", "User is not signed in")
+            userLoaded = true
+            checkIfAllRequestsFinished()
+        }
+    }
+
+    private fun getAllPosts() {
+        Model.shared.getAllPosts { posts ->
+            activity?.runOnUiThread {
+                viewModel.set(posts = posts)
+                adapter.set(posts)
+                adapter.notifyDataSetChanged()
+                postsLoaded = true
+                checkIfAllRequestsFinished()
+            }
+        }
     }
 }

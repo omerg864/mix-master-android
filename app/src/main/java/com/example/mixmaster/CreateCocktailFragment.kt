@@ -1,36 +1,44 @@
 package com.example.mixmaster
 
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.example.mixmaster.databinding.FragmentCreateCocktailBinding
+import com.example.mixmaster.model.Model
+import com.example.mixmaster.model.Post
+import com.example.mixmaster.viewModel.AuthViewModel
+import java.util.UUID
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CreateCocktailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CreateCocktailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private var cameraLauncher: ActivityResultLauncher<Void?>? = null
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     private var binding: FragmentCreateCocktailBinding? = null
+    private var didSetProfileImage = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            Log.d("SignUpFragment", "Image selected: $uri")
+            // Set the selected image into the ImageView
+            binding?.imageView?.setImageURI(uri)
+            didSetProfileImage = true
+            // Optionally, store the URI to use it later for uploading
+        } else {
+            Log.d("SignUpFragment", "No image selected")
         }
     }
 
@@ -47,32 +55,67 @@ class CreateCocktailFragment : Fragment() {
             findNavController().navigate(R.id.action_createCocktailFragment_to_aiCreateFragment)
         }
 
+        binding?.publishButton?.setOnClickListener(::onSaveClicked)
+
+        binding?.openImagesButton?.setOnClickListener {
+            // Launch gallery picker for images
+            pickImageLauncher.launch("image/*")
+        }
+
+        cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
+            binding?.imageView?.setImageBitmap(bitmap)
+            didSetProfileImage = true
+        }
+
+        binding?.takePictureButton?.setOnClickListener {
+            cameraLauncher?.launch(null)
+        }
+
         // Inflate the layout for this fragment
         return binding?.root
+    }
+
+    private fun onSaveClicked(view: View) {
+
+        val post = Post(
+            name = binding?.cocktailNameInput?.text?.toString() ?: "",
+            id = UUID.randomUUID().toString(),
+            description = binding?.descriptionInput?.text?.toString() ?: "",
+            instructions = binding?.instructionsInput?.text?.toString() ?: "",
+            ingredients = binding?.ingredientsInput?.text?.toString() ?: "",
+            author = authViewModel.user.value?.uid.toString()
+        )
+
+        binding?.form?.visibility = View.GONE
+        binding?.progressBar?.visibility = View.VISIBLE
+
+        if (post.name.isEmpty() || post.description.isEmpty() || post.instructions.isEmpty() || post.ingredients.isEmpty()) {
+            binding?.progressBar?.visibility = View.GONE
+            binding?.form?.visibility = View.VISIBLE
+            Toast.makeText(context, "Please fill out all fields", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        if (didSetProfileImage) {
+            binding?.imageView?.isDrawingCacheEnabled = true
+            binding?.imageView?.buildDrawingCache()
+            val bitmap = (binding?.imageView?.drawable as BitmapDrawable).bitmap
+            Model.shared.addPost(post, bitmap, Model.Storage.CLOUDINARY) {
+                binding?.progressBar?.visibility = View.GONE
+                binding?.form?.visibility = View.VISIBLE
+                Navigation.findNavController(view).navigate(R.id.action_createCocktailFragment_to_homeFragment)
+            }
+        } else {
+            Model.shared.addPost(post, null, Model.Storage.CLOUDINARY) {
+                binding?.progressBar?.visibility = View.GONE
+                binding?.form?.visibility = View.VISIBLE
+                Navigation.findNavController(view).navigate(R.id.action_createCocktailFragment_to_homeFragment)
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         binding = null
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CreateCocktailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CreateCocktailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }
