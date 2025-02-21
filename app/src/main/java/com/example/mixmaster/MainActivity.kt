@@ -62,6 +62,24 @@ class MainActivity : AppCompatActivity() {
             view.setPadding(0, 0, 0, 0)
             insets
         }
+
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.homeFragment -> {
+                    // Use the global action to navigate back to HomeFragment
+                    if (navController?.currentDestination?.id != R.id.homeFragment) {
+                        navController?.popBackStack(R.id.homeFragment, false)
+                    } else {
+                        navController?.popBackStack();
+                    }
+                    true
+                }
+                else -> {
+                    // For other items, let NavigationUI handle the navigation.
+                    NavigationUI.onNavDestinationSelected(item, navController as NavController)
+                }
+            }
+        }
     }
 
     private fun observeUserAuthentication() {
@@ -84,7 +102,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                navController?.popBackStack()
+                navController?.popBackStack();
                 true
             }
             R.id.action_settings -> {

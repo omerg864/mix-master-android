@@ -51,13 +51,15 @@ class HomeFragment : Fragment() {
         adapter.listener = object : OnPostClickListener {
             override fun onItemClick(post: Post?) {
                 Log.d("TAG", "On click listener on post: ${post?.name}")
+                val action = HomeFragmentDirections
             }
         }
         adapter.authorListener = object : onUserClickListener {
             override fun onItemClick(id: String?) {
                 Log.d("TAG", "On click listener on author: ${id}")
-                val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment(id ?: "")
-                findNavController().navigate(action)
+                findNavController().navigate(R.id.profileFragment, Bundle().apply {
+                    putString("userId", id)
+                })
             }
         }
         binding?.homeRecyclerView?.adapter = adapter
