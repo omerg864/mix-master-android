@@ -17,8 +17,7 @@ import kotlinx.coroutines.launch
 
 class CocktailsFragment : Fragment() {
 
-    private var _binding: FragmentCocktailsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentCocktailsBinding? = null
 
     private lateinit var adapter: CocktailListAdapter
 
@@ -26,10 +25,10 @@ class CocktailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentCocktailsBinding.inflate(inflater, container, false)
+        binding = FragmentCocktailsBinding.inflate(inflater, container, false)
 
         // Setup RecyclerView.
-        binding.cocktailsRecyclerView.apply {
+        binding?.cocktailsRecyclerView?.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
         }
@@ -41,9 +40,9 @@ class CocktailsFragment : Fragment() {
                 // You can handle navigation or other actions here.
             }
         }
-        binding.cocktailsRecyclerView.adapter = adapter
+        binding?.cocktailsRecyclerView?.adapter = adapter
 
-        return binding.root
+        return binding?.root
     }
 
     override fun onResume() {
@@ -54,12 +53,12 @@ class CocktailsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 
     private fun fetchRandomCocktails() {
         // Show progress bar before sending the request.
-        binding.progressBar.visibility = View.VISIBLE
+        binding?.progressBar?.visibility = View.VISIBLE
         lifecycleScope.launch {
             try {
                 val response = RetrofitClient.apiService.getRandomCocktails()
@@ -76,7 +75,7 @@ class CocktailsFragment : Fragment() {
                 Log.e("CocktailsFragment", "Exception fetching random cocktails", e)
             } finally {
                 // Hide progress bar when request finishes.
-                binding.progressBar.visibility = View.GONE
+                binding?.progressBar?.visibility = View.GONE
             }
         }
     }

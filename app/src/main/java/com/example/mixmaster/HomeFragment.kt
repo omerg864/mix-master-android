@@ -23,8 +23,7 @@ import com.example.mixmaster.viewModel.PostViewModel
 class HomeFragment : Fragment() {
 
     // Use a backing property for binding
-    private var _binding: FragmentHomeBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentHomeBinding? = null
 
     private lateinit var viewModel: PostViewModel
     private lateinit var adapter: PostListAdapter
@@ -38,12 +37,12 @@ class HomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+    ): View? {
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[PostViewModel::class.java]
 
         // Setup RecyclerView for posts.
-        binding.homeRecyclerView.apply {
+        binding?.homeRecyclerView?.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(context)
         }
@@ -61,14 +60,14 @@ class HomeFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
-        binding.homeRecyclerView.adapter = adapter
+        binding?.homeRecyclerView?.adapter = adapter
 
-        return binding.root
+        return binding?.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 
     override fun onResume() {
@@ -76,7 +75,7 @@ class HomeFragment : Fragment() {
         // Reset flags and show the progress bar
         postsLoaded = false
         userLoaded = false
-        binding.progressBar.visibility = View.VISIBLE
+        binding?.progressBar?.visibility = View.VISIBLE
 
         getAllPosts()
         getUserDetails()
@@ -84,7 +83,7 @@ class HomeFragment : Fragment() {
 
     private fun checkIfAllRequestsFinished() {
         if (postsLoaded && userLoaded) {
-            binding.progressBar.visibility = View.GONE
+            binding?.progressBar?.visibility = View.GONE
         }
     }
 
@@ -94,9 +93,11 @@ class HomeFragment : Fragment() {
             Model.shared.getUser(user.uid) { userObj ->
                 activity?.runOnUiThread {
                     Log.d("TAG", "Fetched user: $userObj")
-                    binding.userNameTextView.text = userObj?.name ?: "Unknown"
+                    binding?.userNameTextView?.text = userObj?.name ?: "Unknown"
                     if (userObj?.image != "") {
-                        Glide.with(this).load(userObj?.image).into(binding.profileImage)
+                        if (binding?.profileImage != null) {
+                            Glide.with(this).load(userObj?.image).into(binding?.profileImage ?: return@runOnUiThread)
+                        }
                     }
                     userLoaded = true
                     checkIfAllRequestsFinished()
