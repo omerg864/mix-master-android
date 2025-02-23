@@ -5,10 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class User(
-    @PrimaryKey val id: String,
-    val name: String,
-    val image: String,
-
+    @PrimaryKey val id: String = "",
+    val name: String = "",
+    val image: String = "",
 ) {
 
     companion object {

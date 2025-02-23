@@ -6,10 +6,12 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -22,16 +24,13 @@ class MainActivity : AppCompatActivity() {
     private var navController: NavController? = null
     private lateinit var toolbar: Toolbar
     private lateinit var bottomNavigationView: BottomNavigationView
+    private val authViewModel: AuthViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         // auth check
-        if (false) {
-            val intent = Intent(this@MainActivity, AuthActivity::class.java);
-            startActivity(intent);
-            finish();
-        }
+        observeUserAuthentication()
         setContentView(R.layout.activity_main)
 
         // Handle system insets for edge-to-edge UI
@@ -66,13 +65,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        val navController = findNavController(R.id.main_nav_host)
-        if (navController.currentDestination?.id == R.id.homeFragment) {
-            finish() // Closes the app
-        } else {
-            super.onBackPressed() // Default behavior
-        }
+    private fun observeUserAuthentication() {
+        // Observe the authentication state
+        authViewModel.user.observe(this, Observer { firebaseUser ->
+            Log.d("TAG", "User: $firebaseUser")
+            if (firebaseUser == null) {
+                // User is not authenticated. Navigate to the Auth (login) screen.
+                startActivity(Intent(this, AuthActivity::class.java))
+                finish() // Close MainActivity to prevent access without login
+            }
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -81,10 +83,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> navController?.popBackStack()
-            else -> navController?.let { NavigationUI.onNavDestinationSelected(item, it) }
+        return when (item.itemId) {
+            android.R.id.home -> {
+                navController?.popBackStack()
+                true
+            }
+            R.id.action_settings -> {
+                if (navController?.currentDestination?.id == R.id.settingsFragment) {
+                    return false
+                }
+                // Directly navigate to the settings fragment
+                navController?.navigate(R.id.settingsFragment)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        return true
     }
 }
