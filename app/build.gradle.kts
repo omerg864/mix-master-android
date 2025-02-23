@@ -19,6 +19,7 @@ val localProperties = Properties().apply {
 val cloudinaryCloudName: String = localProperties.getProperty("cloud_name") ?: ""
 val cloudinaryApiKey: String = localProperties.getProperty("cloudinary_api_key") ?: ""
 val cloudinaryApiSecret: String = localProperties.getProperty("cloudinary_api_secret") ?: ""
+val cocktailApiKey: String = localProperties.getProperty("cocktail_api_key") ?: ""
 
 android {
     buildFeatures {
@@ -38,6 +39,7 @@ android {
         buildConfigField("String", "CLOUDINARY_CLOUD_NAME", "\"$cloudinaryCloudName\"")
         buildConfigField("String", "CLOUDINARY_API_KEY", "\"$cloudinaryApiKey\"")
         buildConfigField("String", "CLOUDINARY_API_SECRET", "\"$cloudinaryApiSecret\"")
+        buildConfigField("String", "COCKTAIL_API_KEY", "\"$cocktailApiKey\"")
     }
 
     buildTypes {
@@ -84,6 +86,18 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
+
+    // Retrofit and Gson converter
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    // OkHttp (and optional logging interceptor)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+
+    // Kotlin Coroutines (if you are using suspend functions)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)

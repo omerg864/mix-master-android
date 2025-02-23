@@ -41,11 +41,14 @@ class PostViewHolder(
 
 
         postImage.setOnClickListener {
-            // Handle more button click
             listener?.onItemClick(post)
         }
 
         authorName.setOnClickListener {
+            authorListener?.onItemClick(post?.author)
+        }
+
+        authorImage.setOnClickListener {
             authorListener?.onItemClick(post?.author)
         }
 
