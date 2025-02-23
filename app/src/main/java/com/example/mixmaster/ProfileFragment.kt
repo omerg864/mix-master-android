@@ -6,79 +6,126 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.mixmaster.adapter.CocktailListAdapter
-import com.example.mixmaster.adapter.OnItemClickListener
+import com.bumptech.glide.Glide
 import com.example.mixmaster.adapter.OnPostClickListener
 import com.example.mixmaster.adapter.PostListAdapter
 import com.example.mixmaster.databinding.FragmentProfileBinding
-import com.example.mixmaster.model.Cocktail
+import com.example.mixmaster.model.Model
 import com.example.mixmaster.model.Post
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
+import com.example.mixmaster.viewModel.AuthViewModel
+import com.example.mixmaster.viewModel.PostViewModel
 
 class ProfileFragment : Fragment() {
 
+    private var _binding: FragmentProfileBinding? = null
+    private val binding get() = _binding!!
 
-    private var binding: FragmentProfileBinding? = null
+    private lateinit var viewModel: PostViewModel
+    private lateinit var adapter: PostListAdapter
+    private val authViewModel: AuthViewModel by activityViewModels()
+
+    // Flags to track when each request finishes
+    private var postsLoaded = false
+    private var userLoaded = false
+
+    // This variable will hold the user ID to display.
+    // It is set either from arguments or, if absent, from the logged-in user.
+    private var profileUserId: String = ""
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // Retrieve the userId passed as an argument (if using Bundle or Safe Args)
+        // For Safe Args, you might do:
+        // profileUserId = ProfileFragmentArgs.fromBundle(requireArguments()).userId
+        // Otherwise, manually:
+        profileUserId = arguments?.getString("userId") ?: authViewModel.user.value?.uid ?: ""
+        Log.d("ProfileFragment", "Profile user id: $profileUserId")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        viewModel = ViewModelProvider(this)[PostViewModel::class.java]
 
-        binding = FragmentProfileBinding.inflate(inflater, container, false);
-
-        /*val posts = listOf(
-            PostPreview(
-                id = "1",
-                name = "Margarita Bliss",
-                authorName = "Samantha Carpenter",
-                authorImage = "https://example.com/profile1.jpg",
-                postTime = "1 min. ago",
-                images = listOf("https://images.immediate.co.uk/production/volatile/sites/30/2022/06/Tequila-sunrise-fb8b3ab.jpg?quality=90&resize=556,505"),
-                description = "Share your favorite cocktail recipes with friends",
-                likes = 256,
-                comments = 45
-            ),
-            PostPreview(
-                id = "2",
-                name = "Tropical Sunset",
-                authorName = "Cocktail",
-                authorImage = "https://example.com/profile2.jpg",
-                postTime = "3 hours ago",
-                images = listOf("https://images.immediate.co.uk/production/volatile/sites/30/2022/06/Tequila-sunrise-fb8b3ab.jpg?quality=90&resize=556,505"),
-                description = "Indulge in the art of cocktail making",
-                likes = 256,
-                comments = 45
-            )
-        )*/
-
-        val postList: RecyclerView? = binding?.profileRecyclerView
-        postList?.setHasFixedSize(true)
-
-        val layoutManager = LinearLayoutManager(context)
-        postList?.layoutManager = layoutManager
-
-        //val adapter = PostListAdapter(posts)
-        /*adapter.listener = object : OnPostClickListener {
-            override fun onItemClick(post: PostPreview?) {
-                Log.d("TAG", "On click Activity listener on position ${post?.name}");
+        // Setup RecyclerView for posts.
+        binding.profileRecyclerView.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(context)
+        }
+        // Initialize adapter with an empty list.
+        adapter = PostListAdapter(emptyList())
+        adapter.listener = object : OnPostClickListener {
+            override fun onItemClick(post: Post?) {
+                Log.d("ProfileFragment", "Clicked post: ${post?.name}")
             }
-        }*/
-        //postList?.adapter = adapter
+        }
+        binding.profileRecyclerView.adapter = adapter
 
-        return binding?.root
+        return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Reset flags
+        postsLoaded = false
+        userLoaded = false
+        // Hide the main content and show the progress bar
+        binding.progressBar.visibility = View.VISIBLE
+        binding.scrollView.visibility = View.GONE
+
+        getAllPosts()
+        getUserDetails()
+    }
+
+    private fun checkIfAllRequestsFinished() {
+        if (postsLoaded && userLoaded) {
+            // Hide the progress bar and show the main content once all data is loaded
+            binding.progressBar.visibility = View.GONE
+            binding.scrollView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun getUserDetails() {
+        if (profileUserId.isNotEmpty()) {
+            Model.shared.getUser(profileUserId) { userObj ->
+                activity?.runOnUiThread {
+                    Log.d("ProfileFragment", "Fetched user: $userObj")
+                    binding.userName.text = userObj?.name ?: "Unknown"
+                    binding.userBio.text = userObj?.bio ?: ""
+                    if (!userObj?.image.isNullOrEmpty()) {
+                        Glide.with(this).load(userObj?.image).into(binding.profileImage)
+                    }
+                    userLoaded = true
+                    checkIfAllRequestsFinished()
+                }
+            }
+        } else {
+            Log.d("ProfileFragment", "No valid user id found")
+            userLoaded = true
+            checkIfAllRequestsFinished()
+        }
+    }
+
+    private fun getAllPosts() {
+        Model.shared.getAllUserPosts(profileUserId) { posts ->
+            activity?.runOnUiThread {
+                viewModel.set(posts = posts)
+                binding.cocktailCount.text = posts.size.toString()
+                adapter.set(posts)
+                adapter.notifyDataSetChanged()
+                postsLoaded = true
+                checkIfAllRequestsFinished()
+            }
+        }
+    }
 }

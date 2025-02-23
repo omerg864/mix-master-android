@@ -16,10 +16,15 @@ interface OnPostClickListener {
     fun onItemClick(post: Post?)
 }
 
+interface onUserClickListener {
+    fun onItemClick(id: String?)
+}
+
 
 class PostViewHolder(
     itemView: View,
-    listener: OnPostClickListener?
+    listener: OnPostClickListener?,
+    authorListener: onUserClickListener?
 ): RecyclerView.ViewHolder(itemView) {
     private var post: Post? = null
 
@@ -31,14 +36,17 @@ class PostViewHolder(
     private val postDescription: TextView = itemView.findViewById(R.id.postDescription)
     private val likeButton: MaterialButton = itemView.findViewById(R.id.likeButton)
     private val commentButton: MaterialButton = itemView.findViewById(R.id.commentButton)
-    private val moreButton: ImageButton = itemView.findViewById(R.id.moreButton)
 
     init {
 
 
-        moreButton.setOnClickListener {
+        postImage.setOnClickListener {
             // Handle more button click
             listener?.onItemClick(post)
+        }
+
+        authorName.setOnClickListener {
+            authorListener?.onItemClick(post?.author)
         }
 
         likeButton.setOnClickListener {
@@ -51,6 +59,7 @@ class PostViewHolder(
     }
 
     fun bind(post: Post?, position: Int) {
+        this.post = post
         postName.text = post?.name
         authorName.text = post?.authorName
         postTime.text = ""

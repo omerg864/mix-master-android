@@ -9,6 +9,7 @@ import com.example.mixmaster.model.Post
 class PostListAdapter(private var posts: List<Post>?): RecyclerView.Adapter<PostViewHolder>() {
 
     var listener: OnPostClickListener? = null
+    var authorListener: onUserClickListener? = null
 
     fun set(posts: List<Post>?) {
         this.posts = posts
@@ -22,7 +23,7 @@ class PostListAdapter(private var posts: List<Post>?): RecyclerView.Adapter<Post
             parent,
             false
         )
-        return PostViewHolder(itemView, listener)
+        return PostViewHolder(itemView, listener, authorListener)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {

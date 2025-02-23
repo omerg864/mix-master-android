@@ -8,10 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.mixmaster.adapter.OnPostClickListener
 import com.example.mixmaster.adapter.PostListAdapter
+import com.example.mixmaster.adapter.onUserClickListener
 import com.example.mixmaster.databinding.FragmentHomeBinding
 import com.example.mixmaster.model.Model
 import com.example.mixmaster.model.Post
@@ -50,6 +52,13 @@ class HomeFragment : Fragment() {
         adapter.listener = object : OnPostClickListener {
             override fun onItemClick(post: Post?) {
                 Log.d("TAG", "On click listener on post: ${post?.name}")
+            }
+        }
+        adapter.authorListener = object : onUserClickListener {
+            override fun onItemClick(id: String?) {
+                Log.d("TAG", "On click listener on author: ${id}")
+                val action = HomeFragmentDirections.actionHomeFragmentToProfileFragment(id ?: "")
+                findNavController().navigate(action)
             }
         }
         binding.homeRecyclerView.adapter = adapter
