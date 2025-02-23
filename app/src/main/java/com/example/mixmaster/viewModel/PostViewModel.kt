@@ -1,9 +1,9 @@
-package com.example.mixmaster
+package com.example.mixmaster.viewModel
 
 import androidx.lifecycle.ViewModel
 import com.example.mixmaster.model.Post
 
-class HomeFragmentViewModel : ViewModel() {
+class PostViewModel : ViewModel() {
 
     private var _posts: List<Post>? = null
     var posts: List<Post>?

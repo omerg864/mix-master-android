@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.example.mixmaster.databinding.FragmentSettingsBinding
+import com.example.mixmaster.viewModel.AuthViewModel
 
 
 class SettingsFragment : Fragment() {

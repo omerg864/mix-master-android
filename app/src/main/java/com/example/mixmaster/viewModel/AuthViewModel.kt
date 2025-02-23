@@ -1,4 +1,4 @@
-package com.example.mixmaster
+package com.example.mixmaster.viewModel
 
 import android.graphics.Bitmap
 import android.util.Log
