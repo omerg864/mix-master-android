@@ -2,34 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/welcomeFragment">
-    <fragment
-        android:id="@+id/welcomeFragment"
-        android:name="com.example.mixmaster.WelcomeFragment"
-        android:label="fragment_welcome"
-        tools:layout="@layout/fragment_welcome" >
-        <action
-            android:id="@+id/action_welcomeFragment_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.example.mixmaster.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login" >
-        <action
-            android:id="@+id/action_loginFragment_to_registerFragment"
-            app:destination="@id/registerFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_homeFragment"
-            app:destination="@id/homeFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/registerFragment"
-        android:name="com.example.mixmaster.RegisterFragment"
-        android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+    app:startDestination="@id/homeFragment"
+    android:id="@+id/nav_graph">
     <fragment
         android:id="@+id/createCocktailFragment"
         android:name="com.example.mixmaster.CreateCocktailFragment"
@@ -37,6 +11,9 @@
         <action
             android:id="@+id/action_createCocktailFragment_to_aiCreateFragment"
             app:destination="@id/aiCreateFragment" />
+        <action
+            android:id="@+id/action_createCocktailFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/homeFragment"

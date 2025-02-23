@@ -39,19 +39,19 @@ class CocktailsFragment : Fragment() {
 
         val cocktails = listOf(
             Cocktail(
-                1,
+                "1",
                 "Margarita Bliss",
                 "A refreshing blend of tequila, lime, and triple sec served with a salted rim.",
                 "https://images.immediate.co.uk/production/volatile/sites/30/2022/06/Tequila-sunrise-fb8b3ab.jpg?quality=90&resize=556,505"
             ),
             Cocktail(
-                2,
+                "2",
                 "Tropical Sunset",
                 "Escape to paradise with a mix of rum, pineapple, and coconut flavors.",
                 "https://assets.epicurious.com/photos/656f72061ce0aa7243171bbd/2:3/w_3168,h_4752,c_limit/Champagne-Cocktail_RECIPE_V1.jpg"
             ),
             Cocktail(
-                3,
+                "3",
                 "Classic Manhattan",
                 "A sophisticated blend of whiskey, sweet vermouth, and bitters.",
                 "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8mOBbQTa4p8g_-9yFPkcPA_YRIvdn-cqScQ&s"

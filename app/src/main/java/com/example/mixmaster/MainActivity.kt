@@ -1,5 +1,6 @@
 package com.example.mixmaster
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -25,6 +26,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        // auth check
+        if (false) {
+            val intent = Intent(this@MainActivity, AuthActivity::class.java);
+            startActivity(intent);
+            finish();
+        }
         setContentView(R.layout.activity_main)
 
         // Handle system insets for edge-to-edge UI
@@ -57,18 +64,6 @@ class MainActivity : AppCompatActivity() {
             view.setPadding(0, 0, 0, 0)
             insets
         }
-
-        // Add destination change listener to manage visibility
-        navController!!.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.welcomeFragment, R.id.loginFragment, R.id.registerFragment -> {
-                    hideToolbarAndBottomNavigation()
-                }
-                else -> {
-                    showToolbarAndBottomNavigation()
-                }
-            }
-        }
     }
 
     override fun onBackPressed() {
@@ -78,16 +73,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             super.onBackPressed() // Default behavior
         }
-    }
-
-    private fun showToolbarAndBottomNavigation() {
-        toolbar.visibility = android.view.View.VISIBLE
-        bottomNavigationView.visibility = android.view.View.VISIBLE
-    }
-
-    private fun hideToolbarAndBottomNavigation() {
-        toolbar.visibility = android.view.View.GONE
-        bottomNavigationView.visibility = android.view.View.GONE
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

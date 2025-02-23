@@ -1,5 +1,6 @@
 package com.example.mixmaster
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,11 +26,13 @@ class LoginFragment : Fragment() {
         val loginButton: Button? = binding?.loginButton;
 
         joinButton?.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_registerFragment)
+            findNavController().navigate(R.id.action_loginFragment2_to_registerFragment2)
         }
 
         loginButton?.setOnClickListener {
-            findNavController().navigate(R.id.action_loginFragment_to_homeFragment)
+            val intent = Intent( requireContext(), MainActivity::class.java);
+            startActivity(intent);
+            requireActivity().finish();
         }
 
         return binding?.root
