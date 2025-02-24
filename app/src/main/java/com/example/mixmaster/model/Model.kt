@@ -9,6 +9,7 @@ import com.example.mixmaster.model.dao.AppLocalDb
 import com.example.mixmaster.model.dao.AppLocalDbRepository
 import com.google.firebase.auth.FirebaseUser
 import android.os.Handler  // Use Android's Handler, not java.util.logging.Handler
+import com.example.mixmaster.base.UsersCallback
 import java.util.concurrent.Executors
 
 class Model private constructor() {
@@ -48,7 +49,7 @@ class Model private constructor() {
                     // Use an atomic counter to track the number of pending user fetches.
                     val counter = java.util.concurrent.atomic.AtomicInteger(postsToFetch)
                     for ((index, post) in updatedPosts.withIndex()) {
-                        if (post.author.isNotEmpty()) {
+                        if (post.author.isNotEmpty() && post.author != null) {
                             Log.d("TAG", "Fetching user for post: ${post.id}")
                             // For each post with a valid author, fetch the user.
                             getUser(post.author) { user ->
@@ -297,9 +298,8 @@ class Model private constructor() {
         }
     }
 
-    fun getUser(id: String, callback: (User?) -> Unit) {
+    fun getUser(id: String, callback: (User) -> Unit) {
         firebaseModel.getUser(id) { user ->
-            // Post the result to the main thread.
             if (user != null) {
                 roomExecutor.execute {
                     database.userDao().insertUsers(user)
@@ -308,6 +308,7 @@ class Model private constructor() {
             } else {
                 roomExecutor.execute {
                     val localUser = database.userDao().getUserById(id)
+                        ?: User(id, "Deleted User", "") // Fallback for deleted user.
                     mainHandler.post { callback(localUser) }
                 }
             }
@@ -367,6 +368,26 @@ class Model private constructor() {
                 }
             } else {
                 mainHandler.post { callback(null, error ?: "Sign up failed") }
+            }
+        }
+    }
+
+    fun getAllUsers(callback: UsersCallback) {
+        firebaseModel.getAllUsers { users ->
+            if (users.isNotEmpty()) {
+                roomExecutor.execute {
+                    database.userDao().insertUsers(*users.toTypedArray())
+                }
+                mainHandler.post {
+                    callback(users)
+                }
+            } else {
+                roomExecutor.execute {
+                    val localUsers = database.userDao().getAllUsers()
+                    mainHandler.post {
+                        callback(localUsers)
+                    }
+                }
             }
         }
     }

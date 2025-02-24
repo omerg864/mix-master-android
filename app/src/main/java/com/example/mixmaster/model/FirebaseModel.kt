@@ -11,6 +11,7 @@ import com.example.mixmaster.base.Constants
 import com.example.mixmaster.base.EmptyCallback
 import com.example.mixmaster.base.PostsCallback
 import com.example.mixmaster.base.SuccessCallback
+import com.example.mixmaster.base.UsersCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.Query
@@ -189,6 +190,22 @@ class FirebaseModel {
                     callback(user)
                 } else {
                     callback(null)
+                }
+            }
+    }
+
+    fun getAllUsers(callback: UsersCallback) {
+        database.collection(Constants.COLLECTIONS.USERS).get()
+            .addOnCompleteListener {
+                when (it.isSuccessful) {
+                    true -> {
+                        val users: MutableList<User> = mutableListOf()
+                        for (json in it.result) {
+                            users.add(json.toObject(User::class.java))
+                        }
+                        callback(users)
+                    }
+                    false -> callback(listOf())
                 }
             }
     }
