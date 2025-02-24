@@ -17,6 +17,7 @@ import com.example.mixmaster.adapter.onUserClickListener
 import com.example.mixmaster.databinding.FragmentHomeBinding
 import com.example.mixmaster.model.Model
 import com.example.mixmaster.model.Post
+import com.example.mixmaster.model.User
 import com.example.mixmaster.viewModel.AuthViewModel
 import com.example.mixmaster.viewModel.PostViewModel
 
@@ -79,6 +80,10 @@ class HomeFragment : Fragment() {
         userLoaded = false
         binding?.progressBar?.visibility = View.VISIBLE
 
+        Model.shared.getAllUsers {
+            Log.d("TAG", "Users: $it")
+        }
+
         getAllPosts()
         getUserDetails()
     }
@@ -92,15 +97,22 @@ class HomeFragment : Fragment() {
     private fun getUserDetails() {
         val user = authViewModel.user.value
         if (user != null) {
-            Model.shared.getUser(user.uid) { userObj ->
-                activity?.runOnUiThread {
-                    Log.d("TAG", "Fetched user: $userObj")
-                    binding?.userNameTextView?.text = userObj?.name ?: "Unknown"
-                    if (userObj?.image != "") {
-                        if (binding?.profileImage != null) {
-                            Glide.with(this).load(userObj?.image).into(binding?.profileImage ?: return@runOnUiThread)
+            Log.d("TAG", "User is signed in: ${user.uid}")
+            Model.shared.getUser(user.uid) { userObj: User? ->
+                if (userObj != null) {
+                    activity?.runOnUiThread {
+                        Log.d("TAG", "Fetched user: $userObj")
+                        binding?.userNameTextView?.text = userObj.name ?: "Unknown"
+                        if (userObj.image != "") {
+                            if (binding?.profileImage != null) {
+                                Glide.with(this).load(userObj.image).into(binding?.profileImage ?: return@runOnUiThread)
+                            }
                         }
+                        userLoaded = true
+                        checkIfAllRequestsFinished()
                     }
+                } else {
+                    Log.d("TAG", "failed to fetch user")
                     userLoaded = true
                     checkIfAllRequestsFinished()
                 }

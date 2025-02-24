@@ -1,6 +1,7 @@
 package com.example.mixmaster.model
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.firestoreSettings
@@ -10,8 +11,10 @@ import com.example.mixmaster.base.Constants
 import com.example.mixmaster.base.EmptyCallback
 import com.example.mixmaster.base.PostsCallback
 import com.example.mixmaster.base.SuccessCallback
+import com.example.mixmaster.base.UsersCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.Query
 import java.io.ByteArrayOutputStream
 
 class FirebaseModel {
@@ -40,6 +43,57 @@ class FirebaseModel {
                         callback(posts)
                     }
                     false -> callback(listOf())
+                }
+            }
+    }
+
+    fun searchPosts(query: String, callback: PostsCallback) {
+        // Prepare the query range for prefix search.
+        val endQuery = query + "\uf8ff"
+        // Use a mutable map to avoid duplicate posts (keyed by post id).
+        val postsMap = mutableMapOf<String, Post>()
+        // List the fields to search.
+        val fields = listOf("name", "description", "instructions", "ingredients")
+        // Use an atomic counter to know when all queries are complete.
+        val counter = java.util.concurrent.atomic.AtomicInteger(fields.size)
+
+        for (field in fields) {
+            database.collection(Constants.COLLECTIONS.POSTS)
+                .whereGreaterThanOrEqualTo(field, query)
+                .whereLessThanOrEqualTo(field, endQuery)
+                .get()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        for (document in task.result) {
+                            val post = Post.fromJSON(document.data)
+                            postsMap[post.id] = post
+                        }
+                    } else {
+                        Log.e("FirebaseModel", "Error searching field '$field'", task.exception)
+                    }
+                    // When all field queries have completed, return the aggregated results.
+                    if (counter.decrementAndGet() == 0) {
+                        callback(postsMap.values.toList())
+                    }
+                }
+        }
+    }
+
+
+    fun getLastFourPosts(callback: PostsCallback) {
+        database.collection(Constants.COLLECTIONS.POSTS)
+            .limit(4)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val posts: MutableList<Post> = mutableListOf()
+                    for (document in task.result) {
+                        posts.add(Post.fromJSON(document.data))
+                    }
+                    callback(posts)
+                } else {
+                    Log.e("FirebaseModel", "Error fetching last four posts", task.exception)
+                    callback(listOf())
                 }
             }
     }
@@ -136,6 +190,22 @@ class FirebaseModel {
                     callback(user)
                 } else {
                     callback(null)
+                }
+            }
+    }
+
+    fun getAllUsers(callback: UsersCallback) {
+        database.collection(Constants.COLLECTIONS.USERS).get()
+            .addOnCompleteListener {
+                when (it.isSuccessful) {
+                    true -> {
+                        val users: MutableList<User> = mutableListOf()
+                        for (json in it.result) {
+                            users.add(json.toObject(User::class.java))
+                        }
+                        callback(users)
+                    }
+                    false -> callback(listOf())
                 }
             }
     }

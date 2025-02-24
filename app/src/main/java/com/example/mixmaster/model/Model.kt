@@ -9,6 +9,7 @@ import com.example.mixmaster.model.dao.AppLocalDb
 import com.example.mixmaster.model.dao.AppLocalDbRepository
 import com.google.firebase.auth.FirebaseUser
 import android.os.Handler  // Use Android's Handler, not java.util.logging.Handler
+import com.example.mixmaster.base.UsersCallback
 import java.util.concurrent.Executors
 
 class Model private constructor() {
@@ -48,7 +49,8 @@ class Model private constructor() {
                     // Use an atomic counter to track the number of pending user fetches.
                     val counter = java.util.concurrent.atomic.AtomicInteger(postsToFetch)
                     for ((index, post) in updatedPosts.withIndex()) {
-                        if (post.author.isNotEmpty()) {
+                        if (post.author.isNotEmpty() && post.author != null) {
+                            Log.d("TAG", "Fetching user for post: ${post.id}")
                             // For each post with a valid author, fetch the user.
                             getUser(post.author) { user ->
                                 // When user data is fetched, update the post.
@@ -73,6 +75,128 @@ class Model private constructor() {
                 Log.d("TAG", "Getting posts from local database")
                 roomExecutor.execute {
                     val localPosts = database.postDao().getAllPosts()
+                    mainHandler.post {
+                        callback(localPosts)
+                    }
+                }
+            }
+        }
+    }
+
+    fun searchPosts(query: String, callback: PostsCallback) {
+        firebaseModel.searchPosts(query) { posts ->
+            Log.d("TAG", "Search posts from Firebase: $posts")
+            if (posts.isNotEmpty()) {
+                // Count posts needing author enrichment.
+                val postsToFetch = posts.count { it.author.isNotEmpty() }
+                if (postsToFetch == 0) {
+                    // No enrichment needed—cache locally and return.
+                    roomExecutor.execute {
+                        database.postDao().insertPosts(*posts.toTypedArray())
+                    }
+                    mainHandler.post { callback(posts) }
+                } else {
+                    // Create a mutable list for updating posts.
+                    val updatedPosts = posts.toMutableList()
+                    val counter = java.util.concurrent.atomic.AtomicInteger(postsToFetch)
+                    for ((index, post) in updatedPosts.withIndex()) {
+                        if (post.author.isNotEmpty()) {
+                            getUser(post.author) { user ->
+                                updatedPosts[index] = post.copy(
+                                    authorName = user?.name ?: "",
+                                    authorImage = user?.image ?: ""
+                                )
+                                if (counter.decrementAndGet() == 0) {
+                                    // Once all user details are populated, cache locally.
+                                    roomExecutor.execute {
+                                        database.postDao().insertPosts(*updatedPosts.toTypedArray())
+                                    }
+                                    mainHandler.post { callback(updatedPosts) }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                Log.d("TAG", "No search results from Firebase, using local DB")
+                // Fallback to local database search.
+                roomExecutor.execute {
+                    // It is assumed that your local DAO provides a searchPosts function.
+                    val localPosts = database.postDao().searchPosts(query)
+                    if (localPosts.isNotEmpty()) {
+                        val postsToFetch = localPosts.count { it.author.isNotEmpty() }
+                        if (postsToFetch == 0) {
+                            mainHandler.post { callback(localPosts) }
+                        } else {
+                            val updatedLocalPosts = localPosts.toMutableList()
+                            val counter = java.util.concurrent.atomic.AtomicInteger(postsToFetch)
+                            for ((index, post) in updatedLocalPosts.withIndex()) {
+                                if (post.author.isNotEmpty()) {
+                                    getUser(post.author) { user ->
+                                        updatedLocalPosts[index] = post.copy(
+                                            authorName = user?.name ?: "",
+                                            authorImage = user?.image ?: ""
+                                        )
+                                        if (counter.decrementAndGet() == 0) {
+                                            mainHandler.post { callback(updatedLocalPosts) }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        mainHandler.post { callback(localPosts) }
+                    }
+                }
+            }
+        }
+    }
+
+    fun getLastFourPosts(callback: PostsCallback) {
+        firebaseModel.getLastFourPosts { posts ->
+            Log.d("TAG", "Getting last four posts from Firebase: $posts")
+            if (posts.isNotEmpty()) {
+                // Count posts that have a non-empty author field.
+                val postsToFetch = posts.count { it.author.isNotEmpty() }
+                if (postsToFetch == 0) {
+                    // No posts require author data – cache them locally and callback.
+                    roomExecutor.execute {
+                        database.postDao().insertPosts(*posts.toTypedArray())
+                    }
+                    mainHandler.post {
+                        callback(posts)
+                    }
+                } else {
+                    // Create a mutable copy to update posts with user info.
+                    val updatedPosts = posts.toMutableList()
+                    // Use an atomic counter to track pending user fetches.
+                    val counter = java.util.concurrent.atomic.AtomicInteger(postsToFetch)
+                    for ((index, post) in updatedPosts.withIndex()) {
+                        if (post.author.isNotEmpty()) {
+                            getUser(post.author) { user ->
+                                updatedPosts[index] = post.copy(
+                                    authorName = user?.name ?: "",
+                                    authorImage = user?.image ?: ""
+                                )
+                                // When all user fetches are complete, update local DB and trigger the callback.
+                                if (counter.decrementAndGet() == 0) {
+                                    roomExecutor.execute {
+                                        database.postDao().insertPosts(*updatedPosts.toTypedArray())
+                                    }
+                                    mainHandler.post {
+                                        callback(updatedPosts)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                Log.d("TAG", "Getting last four posts from local database")
+                roomExecutor.execute {
+                    // It is assumed that your local DB provides a method to retrieve the last four posts.
+                    // If not, you might fetch all posts and then filter/sort to get the last four.
+                    val localPosts = database.postDao().getLastFourPosts()
                     mainHandler.post {
                         callback(localPosts)
                     }
@@ -144,24 +268,38 @@ class Model private constructor() {
 
     fun getAllUserPosts(id: String, callback: PostsCallback) {
         firebaseModel.getAllUserPosts(id) { posts ->
+            Log.d("TAG", "Getting user posts from Firebase: $posts")
             if (posts.isNotEmpty()) {
-                roomExecutor.execute {
-                    database.postDao().insertPosts(*posts.toTypedArray())
+                // Fetch the user details once, since all posts share the same author.
+                getUser(id) { user ->
+                    val updatedPosts = posts.map { post ->
+                        post.copy(
+                            authorName = user?.name ?: "",
+                            authorImage = user?.image ?: ""
+                        )
+                    }
+                    // Cache updated posts locally.
+                    roomExecutor.execute {
+                        database.postDao().insertPosts(*updatedPosts.toTypedArray())
+                    }
+                    mainHandler.post {
+                        callback(updatedPosts)
+                    }
                 }
-                mainHandler.post { callback(posts) }
             } else {
                 Log.d("TAG", "Getting user posts from local database")
                 roomExecutor.execute {
                     val localPosts = database.postDao().getPostsByAuthor(id)
-                    mainHandler.post { callback(localPosts) }
+                    mainHandler.post {
+                        callback(localPosts)
+                    }
                 }
             }
         }
     }
 
-    fun getUser(id: String, callback: (User?) -> Unit) {
+    fun getUser(id: String, callback: (User) -> Unit) {
         firebaseModel.getUser(id) { user ->
-            // Post the result to the main thread.
             if (user != null) {
                 roomExecutor.execute {
                     database.userDao().insertUsers(user)
@@ -170,6 +308,7 @@ class Model private constructor() {
             } else {
                 roomExecutor.execute {
                     val localUser = database.userDao().getUserById(id)
+                        ?: User(id, "Deleted User", "") // Fallback for deleted user.
                     mainHandler.post { callback(localUser) }
                 }
             }
@@ -229,6 +368,26 @@ class Model private constructor() {
                 }
             } else {
                 mainHandler.post { callback(null, error ?: "Sign up failed") }
+            }
+        }
+    }
+
+    fun getAllUsers(callback: UsersCallback) {
+        firebaseModel.getAllUsers { users ->
+            if (users.isNotEmpty()) {
+                roomExecutor.execute {
+                    database.userDao().insertUsers(*users.toTypedArray())
+                }
+                mainHandler.post {
+                    callback(users)
+                }
+            } else {
+                roomExecutor.execute {
+                    val localUsers = database.userDao().getAllUsers()
+                    mainHandler.post {
+                        callback(localUsers)
+                    }
+                }
             }
         }
     }
