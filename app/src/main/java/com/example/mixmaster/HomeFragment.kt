@@ -92,15 +92,22 @@ class HomeFragment : Fragment() {
     private fun getUserDetails() {
         val user = authViewModel.user.value
         if (user != null) {
+            Log.d("TAG", "User is signed in: ${user.uid}")
             Model.shared.getUser(user.uid) { userObj ->
-                activity?.runOnUiThread {
-                    Log.d("TAG", "Fetched user: $userObj")
-                    binding?.userNameTextView?.text = userObj?.name ?: "Unknown"
-                    if (userObj?.image != "") {
-                        if (binding?.profileImage != null) {
-                            Glide.with(this).load(userObj?.image).into(binding?.profileImage ?: return@runOnUiThread)
+                if (userObj != null) {
+                    activity?.runOnUiThread {
+                        Log.d("TAG", "Fetched user: $userObj")
+                        binding?.userNameTextView?.text = userObj.name ?: "Unknown"
+                        if (userObj.image != "") {
+                            if (binding?.profileImage != null) {
+                                Glide.with(this).load(userObj.image).into(binding?.profileImage ?: return@runOnUiThread)
+                            }
                         }
+                        userLoaded = true
+                        checkIfAllRequestsFinished()
                     }
+                } else {
+                    Log.d("TAG", "failed to fetch user")
                     userLoaded = true
                     checkIfAllRequestsFinished()
                 }

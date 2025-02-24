@@ -1,6 +1,7 @@
 package com.example.mixmaster.model
 
 import android.graphics.Bitmap
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
 import com.google.firebase.firestore.firestoreSettings
@@ -12,6 +13,7 @@ import com.example.mixmaster.base.PostsCallback
 import com.example.mixmaster.base.SuccessCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.Query
 import java.io.ByteArrayOutputStream
 
 class FirebaseModel {
@@ -40,6 +42,26 @@ class FirebaseModel {
                         callback(posts)
                     }
                     false -> callback(listOf())
+                }
+            }
+    }
+
+
+    fun getLastFourPosts(callback: PostsCallback) {
+        database.collection(Constants.COLLECTIONS.POSTS)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .limit(4)
+            .get()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val posts: MutableList<Post> = mutableListOf()
+                    for (document in task.result) {
+                        posts.add(Post.fromJSON(document.data))
+                    }
+                    callback(posts)
+                } else {
+                    Log.e("FirebaseModel", "Error fetching last four posts", task.exception)
+                    callback(listOf())
                 }
             }
     }
