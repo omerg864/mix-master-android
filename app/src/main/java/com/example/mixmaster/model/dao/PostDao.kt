@@ -22,6 +22,9 @@ interface PostDao {
     @Query("SELECT * FROM Post LIMIT 4")
     fun getLastFourPosts(): List<Post>
 
+    @Query("SELECT * FROM Post WHERE name LIKE '%' || :query || '%' OR description LIKE '%' || :query || '%' OR instructions LIKE '%' || :query || '%' OR ingredients LIKE '%' || :query || '%'")
+    fun searchPosts(query: String): List<Post>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPosts(vararg posts: Post)
 

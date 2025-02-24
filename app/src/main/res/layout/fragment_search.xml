@@ -5,6 +5,17 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recentlyMixedText"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
@@ -25,8 +36,8 @@
         android:layout_margin="16dp"
         app:cardBackgroundColor="#333333"
         app:cardCornerRadius="8dp"
-        app:layout_constraintEnd_toStartOf="@+id/filterButton"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleText">
 
         <EditText
@@ -39,17 +50,6 @@
             android:textColor="@color/white"
             android:textColorHint="#808080" />
     </com.google.android.material.card.MaterialCardView>
-
-    <ImageButton
-        android:id="@+id/filterButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_filter"
-        app:layout_constraintBottom_toBottomOf="@+id/searchCard"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/searchCard" />
 
     <TextView
         android:id="@+id/recentlyMixedText"

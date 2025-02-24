@@ -82,6 +82,75 @@ class Model private constructor() {
         }
     }
 
+    fun searchPosts(query: String, callback: PostsCallback) {
+        firebaseModel.searchPosts(query) { posts ->
+            Log.d("TAG", "Search posts from Firebase: $posts")
+            if (posts.isNotEmpty()) {
+                // Count posts needing author enrichment.
+                val postsToFetch = posts.count { it.author.isNotEmpty() }
+                if (postsToFetch == 0) {
+                    // No enrichment needed—cache locally and return.
+                    roomExecutor.execute {
+                        database.postDao().insertPosts(*posts.toTypedArray())
+                    }
+                    mainHandler.post { callback(posts) }
+                } else {
+                    // Create a mutable list for updating posts.
+                    val updatedPosts = posts.toMutableList()
+                    val counter = java.util.concurrent.atomic.AtomicInteger(postsToFetch)
+                    for ((index, post) in updatedPosts.withIndex()) {
+                        if (post.author.isNotEmpty()) {
+                            getUser(post.author) { user ->
+                                updatedPosts[index] = post.copy(
+                                    authorName = user?.name ?: "",
+                                    authorImage = user?.image ?: ""
+                                )
+                                if (counter.decrementAndGet() == 0) {
+                                    // Once all user details are populated, cache locally.
+                                    roomExecutor.execute {
+                                        database.postDao().insertPosts(*updatedPosts.toTypedArray())
+                                    }
+                                    mainHandler.post { callback(updatedPosts) }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                Log.d("TAG", "No search results from Firebase, using local DB")
+                // Fallback to local database search.
+                roomExecutor.execute {
+                    // It is assumed that your local DAO provides a searchPosts function.
+                    val localPosts = database.postDao().searchPosts(query)
+                    if (localPosts.isNotEmpty()) {
+                        val postsToFetch = localPosts.count { it.author.isNotEmpty() }
+                        if (postsToFetch == 0) {
+                            mainHandler.post { callback(localPosts) }
+                        } else {
+                            val updatedLocalPosts = localPosts.toMutableList()
+                            val counter = java.util.concurrent.atomic.AtomicInteger(postsToFetch)
+                            for ((index, post) in updatedLocalPosts.withIndex()) {
+                                if (post.author.isNotEmpty()) {
+                                    getUser(post.author) { user ->
+                                        updatedLocalPosts[index] = post.copy(
+                                            authorName = user?.name ?: "",
+                                            authorImage = user?.image ?: ""
+                                        )
+                                        if (counter.decrementAndGet() == 0) {
+                                            mainHandler.post { callback(updatedLocalPosts) }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        mainHandler.post { callback(localPosts) }
+                    }
+                }
+            }
+        }
+    }
+
     fun getLastFourPosts(callback: PostsCallback) {
         firebaseModel.getLastFourPosts { posts ->
             Log.d("TAG", "Getting last four posts from Firebase: $posts")
