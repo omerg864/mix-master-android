@@ -1,68 +1,63 @@
 package com.example.mixmaster
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.example.mixmaster.R
 import com.example.mixmaster.databinding.FragmentCocktailDisplayBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [CocktailDisplayFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class CocktailDisplayFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-    private var binding: FragmentCocktailDisplayBinding? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentCocktailDisplayBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
-        binding = FragmentCocktailDisplayBinding.inflate(inflater, container, false)
-        // Inflate the layout for this fragment
-        return binding?.root
+    ): View {
+        _binding = FragmentCocktailDisplayBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        binding = null
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // קבלת הנתונים מה-arguments
+        val cocktailName = arguments?.getString("cocktailName") ?: "Unknown Cocktail"
+        val cocktailDescription = arguments?.getString("cocktailDescription") ?: "No description available."
+        val cocktailIngredients = arguments?.getString("cocktailIngredients") ?: "No ingredients listed."
+        val cocktailInstructions = arguments?.getString("cocktailInstructions") ?: "No instructions available."
+        val cocktailImage = arguments?.getString("cocktailImage") ?: ""
+
+        // הצגת הנתונים במסך
+        binding.cocktailName.text = cocktailName
+        binding.cocktailDescription.text = cocktailDescription
+        binding.cocktailIngredients.text = cocktailIngredients
+        binding.cocktailInstructions.text = cocktailInstructions
+
+        // טעינת תמונה עם Glide
+        Glide.with(this)
+            .load(cocktailImage)
+            .placeholder(R.drawable.ic_cocktail) // תמונה ברירת מחדל במקרה שאין כתובת תקפה
+            .into(binding.cocktailImage)
+
+        // כפתור חזרה
+        binding.backButton.setOnClickListener {
+            findNavController().navigateUp()
+        }
+
+        // כפתור מחיקה (ניתן להוסיף פעולה למחיקת הנתונים או הצגת דיאלוג אישור)
+        binding.deleteButton.setOnClickListener {
+            // לדוגמה: Toast.makeText(requireContext(), "Cocktail deleted", Toast.LENGTH_SHORT).show()
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CocktailDisplayFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CocktailDisplayFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
