@@ -420,9 +420,10 @@ class Model private constructor() {
 //        }
 //    }
 
-    fun updateUserProfile(userId: String, newName: String?, imageUrl: String?, callback: (Boolean) -> Unit) {
+    fun updateUserProfile(userId: String, newName: String?, bio: String?, imageUrl: String?, callback: (Boolean) -> Unit) {
         val updates = mutableMapOf<String, Any>()
         if (!newName.isNullOrEmpty()) updates["name"] = newName
+        if (!bio.isNullOrEmpty()) updates["bio"] = bio
         if (!imageUrl.isNullOrEmpty()) updates["image"] = imageUrl
 
         FirebaseFirestore.getInstance().collection("users")
@@ -431,6 +432,7 @@ class Model private constructor() {
             .addOnSuccessListener { callback(true) }
             .addOnFailureListener { callback(false) }
     }
+
 
 
     private fun uploadImageToCloudinary(image: Bitmap, name: String, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
