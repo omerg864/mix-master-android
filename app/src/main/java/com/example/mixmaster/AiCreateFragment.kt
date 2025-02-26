@@ -12,7 +12,6 @@ import android.widget.Spinner
 import android.widget.Toast
 import com.example.mixmaster.databinding.FragmentAiCreateBinding
 
-
 class AiCreateFragment : Fragment() {
 
     private var _binding: FragmentAiCreateBinding? = null
@@ -23,11 +22,16 @@ class AiCreateFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAiCreateBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        Log.d("SpinnerDebug", "onViewCreated called")
 
         setupSpinner(binding.difficultySpinner, R.array.difficulty_levels, "Difficulty")
         setupSpinner(binding.languageSpinner, R.array.language_options, "Language")
-
-        return binding.root
     }
 
     private fun setupSpinner(spinner: Spinner, arrayResId: Int, tag: String) {
@@ -38,6 +42,15 @@ class AiCreateFragment : Fragment() {
         ).also { it.setDropDownViewResource(R.layout.spinner_dropdown_item) }
 
         spinner.adapter = adapter
+
+        spinner.post {
+            if (spinner.adapter != null && spinner.adapter.count > 0) {
+                spinner.setSelection(0, false)
+                Log.d("SpinnerDebug", "$tag default selection set to first item")
+            } else {
+                Log.e("SpinnerDebug", "$tag adapter is empty!")
+            }
+        }
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -57,4 +70,3 @@ class AiCreateFragment : Fragment() {
         _binding = null
     }
 }
-
