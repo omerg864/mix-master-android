@@ -14,6 +14,7 @@ import com.example.mixmaster.base.SuccessCallback
 import com.example.mixmaster.base.UsersCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.io.ByteArrayOutputStream
 
@@ -46,6 +47,20 @@ class FirebaseModel {
                 }
             }
     }
+
+    fun updateUserName(userId: String, newName: String, callback: (Boolean) -> Unit) {
+        val userRef = FirebaseFirestore.getInstance().collection("users").document(userId)
+        userRef.update("name", newName)
+            .addOnSuccessListener {
+                Log.d("TAG", "User name updated successfully")
+                callback(true)
+            }
+            .addOnFailureListener { e ->
+                Log.e("TAG", "Error updating user name", e)
+                callback(false)
+            }
+    }
+
 
     fun searchPosts(query: String, callback: PostsCallback) {
         // Prepare the query range for prefix search.

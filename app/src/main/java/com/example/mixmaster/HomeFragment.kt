@@ -103,6 +103,7 @@ class HomeFragment : Fragment() {
                     activity?.runOnUiThread {
                         Log.d("TAG", "Fetched user: $userObj")
                         binding?.userNameTextView?.text = userObj.name ?: "Unknown"
+
                         if (userObj.image != "") {
                             if (binding?.profileImage != null) {
                                 Glide.with(this).load(userObj.image).into(binding?.profileImage ?: return@runOnUiThread)
