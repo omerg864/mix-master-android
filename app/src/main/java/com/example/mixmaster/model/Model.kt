@@ -306,7 +306,7 @@ class Model private constructor() {
                             if (success) {
                                 // Save the user locally.
                                 roomExecutor.execute {
-                                    database.userDao().insertUsers(User(firebaseUser.uid, name, imageUrl))
+                                    database.userDao().insertUsers(User(firebaseUser.uid, name, imageUrl, bio))
                                 }
                                 mainHandler.post { callback(firebaseUser, null) }
                             } else {
@@ -319,7 +319,7 @@ class Model private constructor() {
                         firebaseModel.saveUser(firebaseUser, name, bio, "") { success, saveError ->
                             if (success) {
                                 roomExecutor.execute {
-                                    database.userDao().insertUsers(User(firebaseUser.uid, name, ""))
+                                    database.userDao().insertUsers(User(firebaseUser.uid, name, "", bio))
                                 }
                                 mainHandler.post { callback(firebaseUser, null) }
                             } else {
@@ -332,7 +332,7 @@ class Model private constructor() {
                     firebaseModel.saveUser(firebaseUser, name, bio, "") { success, saveError ->
                         if (success) {
                             roomExecutor.execute {
-                                database.userDao().insertUsers(User(firebaseUser.uid, name, ""))
+                                database.userDao().insertUsers(User(firebaseUser.uid, name, "", bio))
                             }
                             mainHandler.post { callback(firebaseUser, null) }
                         } else {
