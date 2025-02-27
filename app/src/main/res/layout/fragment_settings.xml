@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
-    tools:context=".YourActivity">
+    tools:context=".SettingsFragment">
+
 
     <!-- תמונת פרופיל עגולה -->
     <androidx.cardview.widget.CardView
@@ -68,54 +69,102 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- שדה קלט לשם קוקטייל -->
+    <!-- שדה קלט שם משתמש -->
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:id="@+id/userName"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginHorizontal="24dp"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/buttonOpenCamera"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent">-->
+
+<!--        <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:id="@+id/userNameInput"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:hint="Name"-->
+<!--            android:inputType="text"-->
+<!--            android:background="@drawable/rounded_edittext"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="16sp"/>-->
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
+
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/cocktailNameInputLayout"
+        android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
+        android:layout_marginHorizontal="16dp"
+        android:hint="@string/name"
+        android:textColorHint="@color/gray"
         app:layout_constraintTop_toBottomOf="@id/buttonOpenCamera"
+        app:boxStrokeColor="@color/input_stroke_color"
+        app:hintTextColor="@color/white"
+        style="@style/CustomOutlinedBox">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/userNameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!-- שדה קלט תיאור (Bio) -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/bioInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:hint="Write something about yourself..."
+        android:textColorHint="@color/gray"
+        app:boxStrokeColor="@color/input_stroke_color"
+        app:hintTextColor="@color/white"
+        style="@style/CustomOutlinedBox"
+        app:layout_constraintTop_toBottomOf="@id/userName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/cocktailNameInput"
+            android:id="@+id/bioEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name"
-            android:inputType="text"
             android:textColor="@color/white"
-            android:textSize="16sp"/>
+            android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
+
 
     <!-- כפתור עדכון פרופיל -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/updateProfileButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Update Profile"
         android:textAllCaps="false"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:layout_marginHorizontal="24dp"
-        android:layout_marginTop="22dp"
-        app:layout_constraintTop_toBottomOf="@id/cocktailNameInputLayout"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/bioInputLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <!-- כפתור יציאה -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Logout"
         android:textAllCaps="false"
-        android:backgroundTint="#FF4444"
+        android:backgroundTint="@color/purple"
         android:textColor="@color/white"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toBottomOf="@id/updateProfileButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

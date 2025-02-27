@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="60dp"
+    android:minHeight="60dp"
     android:textSize="18sp"
-    android:gravity="center_vertical"
-    android:padding="12dp"
+    android:gravity="start|center_vertical"
+    android:paddingStart="16dp"
+    android:padding="16dp"
     android:textColor="@color/white"
-    android:background="#2C2C2E"
+    android:background="@color/grey"
     android:id="@+id/spinner_item"/>
