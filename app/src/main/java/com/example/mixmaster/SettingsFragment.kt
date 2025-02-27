@@ -23,7 +23,7 @@ class SettingsFragment : Fragment() {
 
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
 
-        binding?.logout?.setOnClickListener{
+        binding?.logoutButton?.setOnClickListener{
             authViewModel.signOut()
         }
 

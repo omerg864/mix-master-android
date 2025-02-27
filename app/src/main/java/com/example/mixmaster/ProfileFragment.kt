@@ -37,12 +37,7 @@ class ProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Retrieve the userId passed as an argument (if using Bundle or Safe Args)
-        // For Safe Args, you might do:
-        // profileUserId = ProfileFragmentArgs.fromBundle(requireArguments()).userId
-        // Otherwise, manually:
         profileUserId = arguments?.getString("userId") ?: authViewModel.user.value?.uid ?: ""
-        Log.d("ProfileFragment", "Profile user id: $profileUserId")
     }
 
     override fun onCreateView(
@@ -61,7 +56,7 @@ class ProfileFragment : Fragment() {
         adapter = PostListAdapter(emptyList())
         adapter.listener = object : OnPostClickListener {
             override fun onItemClick(post: Post?) {
-                Log.d("ProfileFragment", "Clicked post: ${post?.name}")
+                Log.d("TAG", "Clicked post: ${post?.name}")
             }
         }
         binding.profileRecyclerView.adapter = adapter
@@ -99,7 +94,6 @@ class ProfileFragment : Fragment() {
         if (profileUserId.isNotEmpty()) {
             Model.shared.getUser(profileUserId) { userObj ->
                 activity?.runOnUiThread {
-                    Log.d("ProfileFragment", "Fetched user: $userObj")
                     binding.userName.text = userObj?.name ?: "Unknown"
                     binding.userBio.text = userObj?.bio ?: ""
                     if (!userObj?.image.isNullOrEmpty()) {
@@ -110,7 +104,6 @@ class ProfileFragment : Fragment() {
                 }
             }
         } else {
-            Log.d("ProfileFragment", "No valid user id found")
             userLoaded = true
             checkIfAllRequestsFinished()
         }

@@ -14,7 +14,6 @@ import com.example.mixmaster.base.SuccessCallback
 import com.example.mixmaster.base.UsersCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.Query
 import java.io.ByteArrayOutputStream
 
 class FirebaseModel {
