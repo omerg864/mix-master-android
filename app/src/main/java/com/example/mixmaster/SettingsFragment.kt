@@ -92,7 +92,8 @@ class SettingsFragment : Fragment() {
                 activity?.runOnUiThread {
                     user?.let {
                         binding?.userNameInput?.setText(it.name ?: "")
-                        binding?.bioEditText?.setText(it.bio ?: "")
+                        binding?.bioInputLayout?.editText?.setText(it.bio ?: "")
+
 
                         if (!it.image.isNullOrEmpty()) {
                             Glide.with(requireContext())
@@ -109,7 +110,7 @@ class SettingsFragment : Fragment() {
 
     private fun updateUserProfile() {
         val newName = binding?.userNameInput?.text?.toString()
-        val newBio = binding?.bioEditText?.text?.toString()
+        val newBio = binding?.bioInputLayout?.editText?.text?.toString()
         val userId = authViewModel.user.value?.uid ?: return
         val selectedImageUri = binding?.signUpImageView?.tag as? String
 
