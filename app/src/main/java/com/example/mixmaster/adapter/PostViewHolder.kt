@@ -1,15 +1,17 @@
 package com.example.mixmaster.adapter
 
 import android.view.View
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mixmaster.R
 import com.example.mixmaster.model.Post
+import com.example.mixmaster.utils.toFirebaseTimestamp
 import com.google.android.material.button.MaterialButton
 import de.hdodenhof.circleimageview.CircleImageView
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 interface OnPostClickListener {
@@ -65,7 +67,9 @@ class PostViewHolder(
         this.post = post
         postName.text = post?.name
         authorName.text = post?.authorName
-        postTime.text = ""
+        val dateFormat = SimpleDateFormat("dd/MM/yy HH:mm", Locale.getDefault())
+        val date = post?.createdAt?.toFirebaseTimestamp?.toDate()
+        postTime.text = if (date != null) dateFormat.format(date) else ""
         postDescription.text = post?.description
         likeButton.text = "0"
         commentButton.text = "0"

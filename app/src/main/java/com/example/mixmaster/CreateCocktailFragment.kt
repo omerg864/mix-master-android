@@ -100,13 +100,13 @@ class CreateCocktailFragment : Fragment() {
             binding?.imageView?.isDrawingCacheEnabled = true
             binding?.imageView?.buildDrawingCache()
             val bitmap = (binding?.imageView?.drawable as BitmapDrawable).bitmap
-            Model.shared.addPost(post, bitmap, Model.Storage.CLOUDINARY) {
+            Model.shared.addPost(post, bitmap) {
                 binding?.progressBar?.visibility = View.GONE
                 binding?.form?.visibility = View.VISIBLE
                 Navigation.findNavController(view).navigate(R.id.action_createCocktailFragment_to_homeFragment)
             }
         } else {
-            Model.shared.addPost(post, null, Model.Storage.CLOUDINARY) {
+            Model.shared.addPost(post, null) {
                 binding?.progressBar?.visibility = View.GONE
                 binding?.form?.visibility = View.VISIBLE
                 Navigation.findNavController(view).navigate(R.id.action_createCocktailFragment_to_homeFragment)

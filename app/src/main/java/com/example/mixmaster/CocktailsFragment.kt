@@ -40,6 +40,10 @@ class CocktailsFragment : Fragment() {
                 // You can handle navigation or other actions here.
             }
         }
+        binding?.refreshButton?.setOnClickListener {
+            // Fetch random cocktails when the refresh button is clicked.
+            fetchRandomCocktails()
+        }
         binding?.cocktailsRecyclerView?.adapter = adapter
 
         return binding?.root

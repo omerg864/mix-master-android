@@ -14,8 +14,6 @@ import com.example.mixmaster.base.SuccessCallback
 import com.example.mixmaster.base.UsersCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import java.io.ByteArrayOutputStream
 
 class FirebaseModel {
@@ -33,7 +31,9 @@ class FirebaseModel {
     }
 
     fun getAllPosts(callback: PostsCallback) {
-        database.collection(Constants.COLLECTIONS.POSTS).get()
+        database.collection(Constants.COLLECTIONS.POSTS)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .get()
             .addOnCompleteListener {
                 when (it.isSuccessful) {
                     true -> {
@@ -76,6 +76,7 @@ class FirebaseModel {
             database.collection(Constants.COLLECTIONS.POSTS)
                 .whereGreaterThanOrEqualTo(field, query)
                 .whereLessThanOrEqualTo(field, endQuery)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -97,6 +98,7 @@ class FirebaseModel {
 
     fun getLastFourPosts(callback: PostsCallback) {
         database.collection(Constants.COLLECTIONS.POSTS)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
             .limit(4)
             .get()
             .addOnCompleteListener { task ->
@@ -114,7 +116,10 @@ class FirebaseModel {
     }
 
     fun getAllUserPosts(id: String, callback: PostsCallback) {
-        database.collection(Constants.COLLECTIONS.POSTS).whereEqualTo("author", id).get()
+        database.collection(Constants.COLLECTIONS.POSTS)
+            .whereEqualTo("author", id)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .get()
             .addOnCompleteListener {
                 when (it.isSuccessful) {
                     true -> {
@@ -210,7 +215,8 @@ class FirebaseModel {
     }
 
     fun getAllUsers(callback: UsersCallback) {
-        database.collection(Constants.COLLECTIONS.USERS).get()
+        database.collection(Constants.COLLECTIONS.USERS)
+            .get()
             .addOnCompleteListener {
                 when (it.isSuccessful) {
                     true -> {

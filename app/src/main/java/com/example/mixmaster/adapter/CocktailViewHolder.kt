@@ -29,11 +29,10 @@ class CocktailViewHolder(
 
     init {
 
-
         viewDetailsButton.setOnClickListener {
-            Log.d("TAG", "On click listener on position $adapterPosition")
             listener?.onItemClick(post)
         }
+
     }
 
     fun bind(post: Post?, position: Int) {
@@ -41,6 +40,9 @@ class CocktailViewHolder(
         descriptionText.text = post?.description
         this.post = post
 
+        if (post?.image == "") {
+            return
+        }
         Glide.with(itemView.context)
             .load(post?.image)
             .centerCrop()

@@ -15,11 +15,6 @@ import java.util.concurrent.Executors
 
 class Model private constructor() {
 
-    enum class Storage {
-        FIREBASE,
-        CLOUDINARY
-    }
-
     private val firebaseModel = FirebaseModel()
     private val cloudinaryModel = CloudinaryModel()
     private val database: AppLocalDbRepository = AppLocalDb.database
@@ -206,7 +201,7 @@ class Model private constructor() {
         }
     }
 
-    fun addPost(post: Post, profileImage: Bitmap?, storage: Storage, callback: EmptyCallback) {
+    fun addPost(post: Post, profileImage: Bitmap?, callback: EmptyCallback) {
         // Attempt to add the post to Firebase first.
         firebaseModel.addPost(post) { firebaseSuccess ->
             if (!firebaseSuccess) {
@@ -222,45 +217,24 @@ class Model private constructor() {
 
             // If a profile image is provided, upload it and update the post.
             if (profileImage != null) {
-                when (storage) {
-                    Storage.FIREBASE -> {
-                        uploadImageToFirebase(image = profileImage, name = post.id) { url ->
-                            if (url != null) {
-                                val updatedPost = post.copy(image = url)
-                                firebaseModel.addPost(updatedPost) { updateSuccess ->
-                                    if (updateSuccess) {
-                                        roomExecutor.execute {
-                                            database.postDao().insertPosts(updatedPost)
-                                        }
-                                    }
-                                    mainHandler.post { callback() }
+                uploadImageToCloudinary(
+                    image = profileImage,
+                    name = post.id,
+                    onSuccess = { url ->
+                        val updatedPost = post.copy(image = url)
+                        firebaseModel.addPost(updatedPost) { updateSuccess ->
+                            if (updateSuccess) {
+                                roomExecutor.execute {
+                                    database.postDao().insertPosts(updatedPost)
                                 }
-                            } else {
-                                mainHandler.post { callback() }
                             }
+                            mainHandler.post { callback() }
                         }
+                    },
+                    onError = {
+                        mainHandler.post { callback() }
                     }
-                    Storage.CLOUDINARY -> {
-                        uploadImageToCloudinary(
-                            image = profileImage,
-                            name = post.id,
-                            onSuccess = { url ->
-                                val updatedPost = post.copy(image = url)
-                                firebaseModel.addPost(updatedPost) { updateSuccess ->
-                                    if (updateSuccess) {
-                                        roomExecutor.execute {
-                                            database.postDao().insertPosts(updatedPost)
-                                        }
-                                    }
-                                    mainHandler.post { callback() }
-                                }
-                            },
-                            onError = {
-                                mainHandler.post { callback() }
-                            }
-                        )
-                    }
-                }
+                )
             } else {
                 mainHandler.post { callback() }
             }
