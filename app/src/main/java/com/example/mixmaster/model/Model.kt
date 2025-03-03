@@ -10,6 +10,7 @@ import com.example.mixmaster.model.dao.AppLocalDbRepository
 import com.google.firebase.auth.FirebaseUser
 import android.os.Handler  // Use Android's Handler, not java.util.logging.Handler
 import com.example.mixmaster.base.UsersCallback
+import com.google.firebase.firestore.FirebaseFirestore
 import java.util.concurrent.Executors
 
 class Model private constructor() {
@@ -374,6 +375,39 @@ class Model private constructor() {
     private fun uploadImageToFirebase(image: Bitmap, name: String, callback: (String?) -> Unit) {
         firebaseModel.uploadImage(image, name, callback)
     }
+
+//    fun updateUserName(userId: String, newName: String, callback: (Boolean) -> Unit) {
+//        firebaseModel.updateUserName(userId, newName) { success ->
+//            if (success) {
+//                // עדכן גם במסד הנתונים המקומי
+//                roomExecutor.execute {
+//                    val user = database.userDao().getUserById(userId)
+//                    if (user != null) {
+//                        val updatedUser = user.copy(name = newName)
+//                        database.userDao().insertUsers(updatedUser)
+//                    }
+//                }
+//            }
+//            mainHandler.post {
+//                callback(success)
+//            }
+//        }
+//    }
+
+    fun updateUserProfile(userId: String, newName: String?, bio: String?, imageUrl: String?, callback: (Boolean) -> Unit) {
+        val updates = mutableMapOf<String, Any>()
+        if (!newName.isNullOrEmpty()) updates["name"] = newName
+        if (!bio.isNullOrEmpty()) updates["bio"] = bio
+        if (!imageUrl.isNullOrEmpty()) updates["image"] = imageUrl
+
+        FirebaseFirestore.getInstance().collection("users")
+            .document(userId)
+            .update(updates)
+            .addOnSuccessListener { callback(true) }
+            .addOnFailureListener { callback(false) }
+    }
+
+
 
     private fun uploadImageToCloudinary(image: Bitmap, name: String, onSuccess: (String) -> Unit, onError: (String) -> Unit) {
         cloudinaryModel.uploadBitmap(
