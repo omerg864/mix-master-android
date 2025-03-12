@@ -13,12 +13,16 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.mixmaster.databinding.FragmentCreateCocktailBinding
 import com.example.mixmaster.model.Model
 import com.example.mixmaster.model.Post
+import com.example.mixmaster.restAPI.RetrofitClient
 import com.example.mixmaster.viewModel.AuthViewModel
+import kotlinx.coroutines.launch
 import java.util.UUID
 
 
@@ -29,6 +33,8 @@ class CreateCocktailFragment : Fragment() {
 
     private var binding: FragmentCreateCocktailBinding? = null
     private var didSetProfileImage = false
+
+    private var cocktailID: String? = null
 
     private var cocktailName = ""
     private var cocktailDescription = ""
@@ -53,6 +59,7 @@ class CreateCocktailFragment : Fragment() {
         cocktailDescription = arguments?.getString("cocktailDescription") ?: ""
         cocktailIngredients = arguments?.getString("cocktailIngredients") ?: ""
         cocktailInstructions = arguments?.getString("cocktailInstructions") ?: ""
+        cocktailID = arguments?.getString("cocktailId")
     }
 
     override fun onCreateView(
@@ -84,10 +91,14 @@ class CreateCocktailFragment : Fragment() {
             cameraLauncher?.launch(null)
         }
 
-        binding?.cocktailNameInput?.setText(cocktailName)
-        binding?.descriptionInput?.setText(cocktailDescription)
-        binding?.ingredientsInput?.setText(cocktailIngredients)
-        binding?.instructionsInput?.setText(cocktailInstructions)
+        if (cocktailID != null) {
+            getCocktail()
+        } else {
+            binding?.cocktailNameInput?.setText(cocktailName)
+            binding?.descriptionInput?.setText(cocktailDescription)
+            binding?.ingredientsInput?.setText(cocktailIngredients)
+            binding?.instructionsInput?.setText(cocktailInstructions)
+        }
 
         // Inflate the layout for this fragment
         return binding?.root
@@ -131,6 +142,38 @@ class CreateCocktailFragment : Fragment() {
             }
         }
     }
+
+    private fun getCocktail() {
+        if (cocktailID == null)
+            return
+        //binding?.progressBar?.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            try {
+                Log.d("CocktailsFragment", "Fetching ai")
+                val response = RetrofitClient.apiService.getCocktailById(cocktailID!!)
+                if (response.isSuccessful) {
+                    val cocktailResponse = response.body()
+                    val newCocktail: Post = cocktailResponse?.cocktail ?: Post("", "", "", "")
+                    Log.d("CocktailsFragment", "Cocktail fetched: $newCocktail")
+                    // go to create cocktail fragment
+
+                    binding?.cocktailNameInput?.setText(newCocktail.name)
+                    binding?.descriptionInput?.setText(newCocktail.description)
+                    binding?.ingredientsInput?.setText(newCocktail.ingredients)
+                    binding?.instructionsInput?.setText(newCocktail.instructions)
+
+                } else {
+                    Log.e("CocktailsFragment", "Error: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("CocktailsFragment", "Exception fetching random cocktails", e)
+            } finally {
+                // Hide progress bar when request finishes.
+                //binding?.progressBar?.visibility = View.GONE
+            }
+        }
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

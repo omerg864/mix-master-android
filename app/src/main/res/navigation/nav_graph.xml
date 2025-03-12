@@ -63,7 +63,11 @@
         android:id="@+id/cocktailDisplayFragment"
         android:name="com.example.mixmaster.CocktailDisplayFragment"
         android:label="Cocktail"
-        tools:layout="@layout/fragment_cocktail_display" />
+        tools:layout="@layout/fragment_cocktail_display" >
+        <action
+            android:id="@+id/action_cocktailDisplayFragment_to_createCocktailFragment"
+            app:destination="@id/createCocktailFragment" />
+    </fragment>
     <fragment
     android:id="@+id/settingsFragment"
     android:name="com.example.mixmaster.SettingsFragment"
