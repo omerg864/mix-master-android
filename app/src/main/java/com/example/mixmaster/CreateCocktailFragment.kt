@@ -30,6 +30,11 @@ class CreateCocktailFragment : Fragment() {
     private var binding: FragmentCreateCocktailBinding? = null
     private var didSetProfileImage = false
 
+    private var cocktailName = ""
+    private var cocktailDescription = ""
+    private var cocktailIngredients = ""
+    private var cocktailInstructions = ""
+
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) {
             Log.d("SignUpFragment", "Image selected: $uri")
@@ -40,6 +45,14 @@ class CreateCocktailFragment : Fragment() {
         } else {
             Log.d("SignUpFragment", "No image selected")
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        cocktailName = arguments?.getString("cocktailName") ?: ""
+        cocktailDescription = arguments?.getString("cocktailDescription") ?: ""
+        cocktailIngredients = arguments?.getString("cocktailIngredients") ?: ""
+        cocktailInstructions = arguments?.getString("cocktailInstructions") ?: ""
     }
 
     override fun onCreateView(
@@ -70,6 +83,11 @@ class CreateCocktailFragment : Fragment() {
         binding?.takePictureButton?.setOnClickListener {
             cameraLauncher?.launch(null)
         }
+
+        binding?.cocktailNameInput?.setText(cocktailName)
+        binding?.descriptionInput?.setText(cocktailDescription)
+        binding?.ingredientsInput?.setText(cocktailIngredients)
+        binding?.instructionsInput?.setText(cocktailInstructions)
 
         // Inflate the layout for this fragment
         return binding?.root

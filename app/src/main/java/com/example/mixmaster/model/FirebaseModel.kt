@@ -49,20 +49,6 @@ class FirebaseModel {
             }
     }
 
-    fun updateUserName(userId: String, newName: String, callback: (Boolean) -> Unit) {
-        val userRef = FirebaseFirestore.getInstance().collection("users").document(userId)
-        userRef.update("name", newName)
-            .addOnSuccessListener {
-                Log.d("TAG", "User name updated successfully")
-                callback(true)
-            }
-            .addOnFailureListener { e ->
-                Log.e("TAG", "Error updating user name", e)
-                callback(false)
-            }
-    }
-
-
     fun searchPosts(query: String, callback: PostsCallback) {
         // Prepare the query range for prefix search.
         val endQuery = query + "\uf8ff"

@@ -98,8 +98,8 @@ class SettingsFragment : Fragment() {
                         if (!it.image.isNullOrEmpty()) {
                             Glide.with(requireContext())
                                 .load(it.image)
-                                .placeholder(R.drawable.ic_cocktail)
-                                .error(R.drawable.ic_cocktail)
+                                .placeholder(R.drawable.cocktails)
+                                .error(R.drawable.cocktails)
                                 .into(binding!!.signUpImageView)
                         }
                     }
