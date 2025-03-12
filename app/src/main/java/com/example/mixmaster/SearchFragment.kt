@@ -17,6 +17,7 @@ import com.example.mixmaster.model.Model
 import com.example.mixmaster.model.Post
 import com.example.mixmaster.viewModel.PostViewModel
 import androidx.core.widget.addTextChangedListener
+import androidx.navigation.fragment.findNavController
 
 class SearchFragment : Fragment() {
 
@@ -48,6 +49,9 @@ class SearchFragment : Fragment() {
         adapter.listener = object : OnItemClickListener {
             override fun onItemClick(post: Post?) {
                 Log.d("TAG", "On click listener on post: ${post?.name}")
+                val bundle = Bundle()
+                bundle.putString("postID", post?.id)
+                findNavController().navigate(R.id.action_searchFragment_to_postDisplayFragment, bundle)
             }
         }
         binding?.cocktailsRecyclerView?.adapter = adapter

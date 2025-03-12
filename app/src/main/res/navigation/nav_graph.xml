@@ -45,7 +45,11 @@
         android:id="@+id/searchFragment"
         android:name="com.example.mixmaster.SearchFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_postDisplayFragment"
+            app:destination="@id/postDisplayFragment" />
+    </fragment>
     <fragment
         android:id="@+id/cocktailsFragment"
         android:name="com.example.mixmaster.CocktailsFragment"
