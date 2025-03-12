@@ -14,6 +14,7 @@ import com.example.mixmaster.base.SuccessCallback
 import com.example.mixmaster.base.UsersCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import java.io.ByteArrayOutputStream
 
@@ -233,8 +234,10 @@ class FirebaseModel {
     }
 
     fun uploadImage(image: Bitmap, name: String, callback: (String?) -> Unit) {
+        Log.d("FirebaseUpload", "Uploading image with name: $name")
+
         val storageRef = storage.reference
-        val imageProfileRef = storageRef.child("images/$name.jpg")
+        val imageProfileRef = storageRef.child("profile_images/$name.jpg")
         val baos = ByteArrayOutputStream()
         image.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()

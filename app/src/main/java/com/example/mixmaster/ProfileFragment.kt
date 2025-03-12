@@ -96,9 +96,14 @@ class ProfileFragment : Fragment() {
                 activity?.runOnUiThread {
                     binding.userName.text = userObj?.name ?: "Unknown"
                     binding.userBio.text = userObj?.bio ?: ""
+
+                    // אם יש תמונה, טוענים אותה
                     if (!userObj?.image.isNullOrEmpty()) {
                         Glide.with(this).load(userObj?.image).into(binding.profileImage)
+                    } else {
+                        binding.profileImage.setImageResource(R.drawable.cocktails) // תמונת ברירת מחדל
                     }
+
                     userLoaded = true
                     checkIfAllRequestsFinished()
                 }
@@ -108,6 +113,7 @@ class ProfileFragment : Fragment() {
             checkIfAllRequestsFinished()
         }
     }
+
 
     private fun getAllPosts() {
         Model.shared.getAllUserPosts(profileUserId) { posts ->
