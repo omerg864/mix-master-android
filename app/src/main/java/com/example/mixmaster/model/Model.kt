@@ -25,6 +25,41 @@ class Model private constructor() {
         val shared = Model()
     }
 
+    fun getPostById(id: String, callback: (Post?) -> Unit) {
+        firebaseModel.getPostById(id) { post ->
+            if (post != null) {
+                roomExecutor.execute {
+                    database.postDao().insertPosts(post)
+                }
+                mainHandler.post {
+                    // populate user
+                    if (post.author.isNotEmpty() && post.author != null) {
+                        getUser(post.author) { user ->
+                            val updatedPost = post.copy(
+                                authorName = user?.name ?: "",
+                                authorImage = user?.image ?: ""
+                            )
+                            callback(updatedPost)
+                        }
+                    } else {
+                        val updatedPost = post.copy(
+                            authorName = "Deleted User",
+                            authorImage = ""
+                        )
+                        callback(updatedPost)
+                    }
+                }
+            } else {
+                roomExecutor.execute {
+                    val localPost = database.postDao().getPostById(id)
+                    mainHandler.post {
+                        callback(localPost)
+                    }
+                }
+            }
+        }
+    }
+
     fun getAllPosts(callback: PostsCallback) {
         firebaseModel.getAllPosts { posts ->
             Log.d("TAG", "Getting posts from Firebase: $posts")

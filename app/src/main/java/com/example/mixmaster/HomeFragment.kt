@@ -52,7 +52,9 @@ class HomeFragment : Fragment() {
         adapter.listener = object : OnPostClickListener {
             override fun onItemClick(post: Post?) {
                 Log.d("TAG", "On click listener on post: ${post?.name}")
-                val action = HomeFragmentDirections
+                val bundle = Bundle()
+                bundle.putString("postID", post?.id)
+                findNavController().navigate(R.id.action_homeFragment_to_postDisplayFragment, bundle)
             }
         }
         adapter.authorListener = object : onUserClickListener {

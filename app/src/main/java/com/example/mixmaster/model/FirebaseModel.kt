@@ -31,6 +31,18 @@ class FirebaseModel {
         database.firestoreSettings = setting
     }
 
+    fun getPostById(id: String, callback: (Post?) -> Unit) {
+        database.collection(Constants.COLLECTIONS.POSTS).document(id).get().addOnCompleteListener {
+            when (it.isSuccessful) {
+                true -> {
+                    val post = it.result.toObject(Post::class.java)
+                    callback(post)
+                }
+                false -> callback(null)
+            }
+        }
+    }
+
     fun getAllPosts(callback: PostsCallback) {
         database.collection(Constants.COLLECTIONS.POSTS)
             .orderBy("createdAt", Query.Direction.DESCENDING)
