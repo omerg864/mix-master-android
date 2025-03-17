@@ -60,6 +60,21 @@ class Model private constructor() {
         }
     }
 
+    fun deletePost(post: Post, callback: (success: Boolean) -> Unit) {
+        firebaseModel.deletePost(post.id) { success ->
+            if (!success) {
+                mainHandler.post { callback(false) }
+                return@deletePost
+            }
+            roomExecutor.execute {
+                database.postDao().deletePost(post)
+            }
+            mainHandler.post {
+                callback(true)
+            }
+        }
+    }
+
     fun getAllPosts(callback: PostsCallback) {
         firebaseModel.getAllPosts { posts ->
             Log.d("TAG", "Getting posts from Firebase: $posts")

@@ -141,10 +141,14 @@ class FirebaseModel {
             }
     }
 
-    fun deletePost(id: String, callback: EmptyCallback) {
+    fun deletePost(id: String, callback: (success: Boolean) -> Unit) {
         database.collection(Constants.COLLECTIONS.POSTS).document(id).delete()
-            .addOnCompleteListener {
-                callback()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    callback(true)
+                } else {
+                    callback(false)
+                }
             }
     }
 

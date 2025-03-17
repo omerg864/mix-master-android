@@ -36,8 +36,7 @@ class PostViewHolder(
     private val postTime: TextView = itemView.findViewById(R.id.postTime)
     private val postImage: ImageView = itemView.findViewById(R.id.postImage)
     private val postDescription: TextView = itemView.findViewById(R.id.postDescription)
-    private val likeButton: MaterialButton = itemView.findViewById(R.id.likeButton)
-    private val commentButton: MaterialButton = itemView.findViewById(R.id.commentButton)
+
 
     init {
 
@@ -54,13 +53,6 @@ class PostViewHolder(
             authorListener?.onItemClick(post?.author)
         }
 
-        likeButton.setOnClickListener {
-            // Handle like button click
-        }
-
-        commentButton.setOnClickListener {
-            // Handle comment button click
-        }
     }
 
     fun bind(post: Post?, position: Int) {
@@ -71,8 +63,6 @@ class PostViewHolder(
         val date = post?.createdAt?.toFirebaseTimestamp?.toDate()
         postTime.text = if (date != null) dateFormat.format(date) else ""
         postDescription.text = post?.description
-        likeButton.text = "0"
-        commentButton.text = "0"
 
         // Load images using Glide
         Glide.with(itemView.context)
