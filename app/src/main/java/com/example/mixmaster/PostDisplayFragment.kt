@@ -50,12 +50,19 @@ class PostDisplayFragment : Fragment() {
         }
 
         binding?.deleteButton?.setOnClickListener {
+            if (post == null) {
+                return@setOnClickListener
+            }
+            binding?.progressBar?.visibility = View.VISIBLE
+            binding?.content?.visibility = View.GONE
             Model.shared.deletePost(post!!) {
                 if (it) {
                     findNavController().popBackStack()
                 } else {
                     Toast.makeText(context, "Failed to delete post", Toast.LENGTH_SHORT).show()
                 }
+                binding?.progressBar?.visibility = View.GONE
+                binding?.content?.visibility = View.VISIBLE
             }
         }
 
@@ -78,6 +85,8 @@ class PostDisplayFragment : Fragment() {
         if (postID == null) {
             return
         }
+        binding?.progressBar?.visibility = View.VISIBLE
+        binding?.content?.visibility = View.GONE
         Model.shared.getPostById(postID!!) { post ->
             this.post = post;
             activity?.runOnUiThread {
@@ -100,6 +109,8 @@ class PostDisplayFragment : Fragment() {
                 if (post?.image != "") {
                     Glide.with(this).load(post?.image).into(binding?.cocktailImage ?: return@runOnUiThread)
                 }
+                binding?.progressBar?.visibility = View.GONE
+                binding?.content?.visibility = View.VISIBLE
             }
         }
     }
