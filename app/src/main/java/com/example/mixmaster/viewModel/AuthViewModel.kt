@@ -64,6 +64,8 @@ class AuthViewModel : ViewModel() {
         }
     }
 
+
+
     // Sign out the current user.
     fun signOut() {
         model.signOut()

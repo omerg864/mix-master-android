@@ -394,17 +394,34 @@ class Model private constructor() {
 //        }
 //    }
 
-    fun updateUserProfile(userId: String, newName: String?, bio: String?, imageUrl: String?, callback: (Boolean) -> Unit) {
-        val updates = mutableMapOf<String, Any>()
-        if (!newName.isNullOrEmpty()) updates["name"] = newName
-        if (!bio.isNullOrEmpty()) updates["bio"] = bio
-        if (!imageUrl.isNullOrEmpty()) updates["image"] = imageUrl
 
-        FirebaseFirestore.getInstance().collection("users")
-            .document(userId)
-            .update(updates)
-            .addOnSuccessListener { callback(true) }
-            .addOnFailureListener { callback(false) }
+    fun updateUserDB(userId: FirebaseUser, newName: String, bio: String, image_url: String?, callback: (Boolean) -> Unit) {
+        firebaseModel.saveUser(userId, newName, bio, image_url) {  success, saveError ->
+            callback(success)
+        }
+    }
+
+    fun updateUserProfile(user: FirebaseUser, newName: String, bio: String, image: Bitmap?, callback: (Boolean) -> Unit) {
+        if (image != null) {
+            uploadImageToCloudinary(image, user.uid, onSuccess = { imageUrl ->
+                roomExecutor.execute {
+                    database.userDao().insertUsers(User(user.uid, newName, imageUrl, bio))
+                }
+                updateUserDB(user, newName, bio, imageUrl) { success ->
+                    mainHandler.post { callback(success) }
+                }
+            }, onError = { errMsg ->
+                Log.e("TAG", "Image upload to Cloudinary failed: $errMsg")
+                callback(false)
+            })
+        } else {
+            roomExecutor.execute {
+                database.userDao().insertUsers(User(user.uid, newName, "", bio))
+            }
+            updateUserDB(user, newName, bio, null) { success ->
+                mainHandler.post { callback(success) }
+            }
+        }
     }
 
 
