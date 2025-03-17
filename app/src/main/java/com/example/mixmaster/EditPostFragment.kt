@@ -131,6 +131,8 @@ class EditPostFragment : Fragment() {
         if (postID == null) {
             return
         }
+        binding?.form?.visibility = View.GONE
+        binding?.progressBar?.visibility = View.VISIBLE
         Model.shared.getPostById(postID!!) { post ->
             this.post = post;
             activity?.runOnUiThread {
@@ -143,6 +145,8 @@ class EditPostFragment : Fragment() {
                 if (post?.image != "") {
                     Glide.with(this).load(post?.image).into(binding?.imageView ?: return@runOnUiThread)
                 }
+                binding?.form?.visibility = View.VISIBLE
+                binding?.progressBar?.visibility = View.GONE
             }
         }
     }
