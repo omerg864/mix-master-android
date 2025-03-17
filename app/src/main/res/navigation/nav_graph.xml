@@ -8,6 +8,21 @@
         android:id="@+id/createCocktailFragment"
         android:name="com.example.mixmaster.CreateCocktailFragment"
         android:label="Create Cocktail" >
+
+        <argument
+            android:name="cocktailId"
+            app:argType="string" />
+
+        <argument
+            android:name="cocktailName"
+            app:argType="string" />
+        <argument
+            android:name="cocktailIngredients"
+            app:argType="string" />
+        <argument
+            android:name="cocktailInstructions"
+            app:argType="string" />
+
         <action
             android:id="@+id/action_createCocktailFragment_to_aiCreateFragment"
             app:destination="@id/aiCreateFragment" />
@@ -74,6 +89,11 @@
         android:name="com.example.mixmaster.CocktailDisplayFragment"
         android:label="Cocktail"
         tools:layout="@layout/fragment_cocktail_display" >
+
+        <argument
+            android:name="cocktailId"
+            app:argType="string" />
+
         <action
             android:id="@+id/action_cocktailDisplayFragment_to_createCocktailFragment"
             app:destination="@id/createCocktailFragment" />
@@ -86,7 +106,12 @@
     <fragment
         android:id="@+id/postDisplayFragment"
         android:name="com.example.mixmaster.PostDisplayFragment"
-        android:label="PostDisplayFragment" >
+        android:label="Post" >
+
+        <argument
+            android:name="postID"
+            app:argType="string" />
+
         <action
             android:id="@+id/action_postDisplayFragment_to_editPostFragment"
             app:destination="@id/editPostFragment" />
@@ -97,8 +122,14 @@
     <fragment
         android:id="@+id/editPostFragment"
         android:name="com.example.mixmaster.EditPostFragment"
-        android:label="fragment_edit_post"
-        tools:layout="@layout/fragment_edit_post" />
+        android:label="Edit Post"
+        tools:layout="@layout/fragment_edit_post" >
+
+        <argument
+            android:name="postID"
+            app:argType="string" />
+
+    </fragment>
 
 
 </navigation>
