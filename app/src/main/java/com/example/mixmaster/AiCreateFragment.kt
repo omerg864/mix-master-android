@@ -79,7 +79,8 @@ class AiCreateFragment : Fragment() {
     }
 
     private fun getAiCocktail() {
-        //binding?.progressBar?.visibility = View.VISIBLE
+        binding?.progressBar?.visibility = View.VISIBLE
+        binding?.content?.visibility = View.GONE
         lifecycleScope.launch {
             try {
                 Log.d("CocktailsFragment", "Fetching ai")
@@ -108,7 +109,8 @@ class AiCreateFragment : Fragment() {
                 Log.e("CocktailsFragment", "Exception fetching random cocktails", e)
             } finally {
                 // Hide progress bar when request finishes.
-                //binding?.progressBar?.visibility = View.GONE
+                binding?.progressBar?.visibility = View.GONE
+                binding?.content?.visibility = View.VISIBLE
             }
         }
     }
