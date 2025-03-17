@@ -115,14 +115,28 @@ class SettingsFragment : Fragment() {
 
         binding?.progressBar?.visibility = View.VISIBLE
         binding?.form?.visibility = View.GONE
-        Model.shared.updateUserProfile(authViewModel.user.value!!, newName, newBio, bitmap) {
-            if (it) {
-                Log.d("SettingsFragment", "Profile updated successfully")
-            } else {
-                Log.e("SettingsFragment", "Failed to update profile")
+        if (!didSetProfileImage) {
+            Log.d("SettingsFragment", "No profile image selected, skipping upload")
+            Model.shared.updateUserProfile(authViewModel.user.value!!, newName, newBio, null) {
+                if (it) {
+                    Log.d("SettingsFragment", "Profile updated successfully")
+                } else {
+                    Log.e("SettingsFragment", "Failed to update profile")
+                }
+                binding?.progressBar?.visibility = View.GONE
+                binding?.form?.visibility = View.VISIBLE
             }
-            binding?.progressBar?.visibility = View.GONE
-            binding?.form?.visibility = View.VISIBLE
+        }
+        else {
+            Model.shared.updateUserProfile(authViewModel.user.value!!, newName, newBio, bitmap) {
+                if (it) {
+                    Log.d("SettingsFragment", "Profile updated successfully")
+                } else {
+                    Log.e("SettingsFragment", "Failed to update profile")
+                }
+                binding?.progressBar?.visibility = View.GONE
+                binding?.form?.visibility = View.VISIBLE
+            }
         }
 
     }

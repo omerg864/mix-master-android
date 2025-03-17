@@ -468,7 +468,7 @@ class Model private constructor() {
             roomExecutor.execute {
                 database.userDao().insertUsers(User(user.uid, newName, "", bio))
             }
-            updateUserDB(user, newName, bio, null) { success ->
+            updateUserDB(user, newName, bio, "") { success ->
                 mainHandler.post { callback(success) }
             }
         }
