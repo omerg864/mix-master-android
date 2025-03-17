@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.mixmaster.adapter.OnPostClickListener
@@ -57,6 +58,9 @@ class ProfileFragment : Fragment() {
         adapter.listener = object : OnPostClickListener {
             override fun onItemClick(post: Post?) {
                 Log.d("TAG", "Clicked post: ${post?.name}")
+                val bundle = Bundle()
+                bundle.putString("postID", post?.id)
+                findNavController().navigate(R.id.action_profileFragment_to_postDisplayFragment, bundle)
             }
         }
         binding.profileRecyclerView.adapter = adapter

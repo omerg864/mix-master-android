@@ -32,6 +32,18 @@ class FirebaseModel {
         database.firestoreSettings = setting
     }
 
+    fun getPostById(id: String, callback: (Post?) -> Unit) {
+        database.collection(Constants.COLLECTIONS.POSTS).document(id).get().addOnCompleteListener {
+            when (it.isSuccessful) {
+                true -> {
+                    val post = it.result.toObject(Post::class.java)
+                    callback(post)
+                }
+                false -> callback(null)
+            }
+        }
+    }
+
     fun getAllPosts(callback: PostsCallback) {
         database.collection(Constants.COLLECTIONS.POSTS)
             .orderBy("createdAt", Query.Direction.DESCENDING)
@@ -130,10 +142,14 @@ class FirebaseModel {
             }
     }
 
-    fun deletePost(id: String, callback: EmptyCallback) {
+    fun deletePost(id: String, callback: (success: Boolean) -> Unit) {
         database.collection(Constants.COLLECTIONS.POSTS).document(id).delete()
-            .addOnCompleteListener {
-                callback()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    callback(true)
+                } else {
+                    callback(false)
+                }
             }
     }
 

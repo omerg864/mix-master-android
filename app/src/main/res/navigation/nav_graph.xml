@@ -23,6 +23,9 @@
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_postDisplayFragment"
+            app:destination="@id/postDisplayFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -33,13 +36,20 @@
         <argument
             android:name="userId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_profileFragment_to_postDisplayFragment"
+            app:destination="@id/postDisplayFragment" />
 
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
         android:name="com.example.mixmaster.SearchFragment"
         android:label="Search"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_searchFragment_to_postDisplayFragment"
+            app:destination="@id/postDisplayFragment" />
+    </fragment>
     <fragment
         android:id="@+id/cocktailsFragment"
         android:name="com.example.mixmaster.CocktailsFragment"
@@ -73,6 +83,22 @@
     android:name="com.example.mixmaster.SettingsFragment"
     android:label="Settings"
     tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/postDisplayFragment"
+        android:name="com.example.mixmaster.PostDisplayFragment"
+        android:label="PostDisplayFragment" >
+        <action
+            android:id="@+id/action_postDisplayFragment_to_editPostFragment"
+            app:destination="@id/editPostFragment" />
+        <action
+            android:id="@+id/action_postDisplayFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editPostFragment"
+        android:name="com.example.mixmaster.EditPostFragment"
+        android:label="fragment_edit_post"
+        tools:layout="@layout/fragment_edit_post" />
 
 
 </navigation>
