@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/welcomeFragment2"
         android:name="com.example.mixmaster.WelcomeFragment"
-        android:label="WelcomeFragment" >
+        android:label="Welcome" >
         <action
             android:id="@+id/action_welcomeFragment2_to_loginFragment2"
             app:destination="@id/loginFragment2" />
@@ -15,7 +15,7 @@
     <fragment
         android:id="@+id/loginFragment2"
         android:name="com.example.mixmaster.LoginFragment"
-        android:label="LoginFragment" >
+        android:label="Login" >
         <action
             android:id="@+id/action_loginFragment2_to_registerFragment2"
             app:destination="@id/registerFragment2" />
@@ -23,7 +23,7 @@
     <fragment
         android:id="@+id/registerFragment2"
         android:name="com.example.mixmaster.RegisterFragment"
-        android:label="RegisterFragment" >
+        android:label="Register" >
         <action
             android:id="@+id/action_registerFragment2_to_loginFragment2"
             app:destination="@id/loginFragment2" />
