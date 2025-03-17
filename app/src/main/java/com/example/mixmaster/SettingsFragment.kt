@@ -84,17 +84,11 @@ class SettingsFragment : Fragment() {
                         binding?.bioInputLayout?.editText?.setText(it.bio ?: "")
 
                         if (!it.image.isNullOrEmpty()) {
-                            Log.d("SettingsFragment", "Loading user image from Firebase: ${it.image}")
-
-                            activity?.runOnUiThread {
-                                Glide.with(requireContext())
-                                    .load(it.image)
-                                    .placeholder(R.drawable.ic_cocktail) // תמונה זמנית אם אין
-                                    .error(R.drawable.ic_cocktail) // תמונה חלופית במקרה של שגיאה
-                                    .into(binding!!.signUpImageView)
-
-                                binding!!.signUpImageView.tag = it.image
-                            }
+                            Glide.with(requireContext())
+                                .load(it.image)
+                                .placeholder(R.drawable.cocktails)
+                                .error(R.drawable.cocktails)
+                                .into(binding!!.signUpImageView)
                         } else {
                             Log.d("SettingsFragment", "User has no profile image")
                         }

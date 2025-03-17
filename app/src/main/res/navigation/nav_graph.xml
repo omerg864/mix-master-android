@@ -54,7 +54,11 @@
         android:id="@+id/aiCreateFragment"
         android:name="com.example.mixmaster.AiCreateFragment"
         android:label="AI Cocktail"
-        tools:layout="@layout/fragment_ai_create" />
+        tools:layout="@layout/fragment_ai_create" >
+        <action
+            android:id="@+id/action_aiCreateFragment_to_createCocktailFragment"
+            app:destination="@id/createCocktailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/cocktailDisplayFragment"
         android:name="com.example.mixmaster.CocktailDisplayFragment"
