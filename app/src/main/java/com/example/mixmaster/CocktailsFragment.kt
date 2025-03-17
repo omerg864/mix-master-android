@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mixmaster.adapter.CocktailListAdapter
 import com.example.mixmaster.adapter.OnItemClickListener
@@ -37,6 +38,9 @@ class CocktailsFragment : Fragment() {
         adapter.listener = object : OnItemClickListener {
             override fun onItemClick(post: Post?) {
                 Log.d("CocktailsFragment", "Clicked on cocktail: ${post?.name}")
+                val bundle = Bundle();
+                bundle.putString("cocktailId", post?.id);
+                findNavController().navigate(R.id.action_cocktailsFragment_to_cocktailDisplayFragment, bundle);
                 // You can handle navigation or other actions here.
             }
         }
