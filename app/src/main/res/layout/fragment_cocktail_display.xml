@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Ingredients"
+            android:text="@string/ingredients"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -83,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Instructions"
+            android:text="@string/instructions"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:backgroundTint="#6200EE"
-            android:text="Fork"
+            android:text="@string/Fork"
             android:textAllCaps="false"
             app:cornerRadius="8dp" />
 

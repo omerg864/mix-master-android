@@ -40,7 +40,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mix it up,"
+                android:text="@string/Mix_it_up"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/userNameTextView"
-                android:text="Bartender Bot"
+                android:text="@string/Bartender_Bot"
                 android:textColor="@color/gray"
                 android:textSize="14sp" />
         </LinearLayout>

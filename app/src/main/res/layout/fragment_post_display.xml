@@ -102,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Ingredients"
+            android:text="@string/ingredients"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -120,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Instructions"
+            android:text="@string/Instructions"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -150,7 +150,7 @@
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#6200EE"
                 android:visibility="gone"
-                android:text="Edit"
+                android:text="@string/Edit"
                 android:textAllCaps="false"
                 app:cornerRadius="8dp" />
 
@@ -162,7 +162,7 @@
                 android:layout_marginStart="8dp"
                 android:backgroundTint="#EE0018"
                 android:visibility="gone"
-                android:text="Delete"
+                android:text="@string/Delete"
                 android:textAllCaps="false"
                 app:cornerRadius="8dp" />
 

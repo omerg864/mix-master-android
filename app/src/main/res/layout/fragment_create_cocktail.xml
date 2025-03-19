@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Open camera"
+                android:text="@string/Open_camera"
                 app:icon="@drawable/take_photo"
                 style="@style/Widget.Material3.Button.Icon" />
 
@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Select from photos"
+                android:text="@string/Select_from_photos"
                 app:icon="@drawable/ic_gallery"
                 style="@style/Widget.Material3.Button.Icon" />
         </LinearLayout>
@@ -81,7 +81,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Cocktail Name"
+                    android:hint="@string/Cocktail_Name"
                     android:id="@+id/cocktailNameInput"
                     android:inputType="text"
                     android:textColor="@color/white" />
@@ -101,7 +101,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Description"
+                    android:hint="@string/Description"
                     android:id="@+id/descriptionInput"
                     android:inputType="textMultiLine"
                     android:minLines="3"
@@ -121,7 +121,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Ingredients"
+                    android:hint="@string/ingredients"
                     android:id="@+id/ingredientsInput"
                     android:inputType="textMultiLine"
                     android:minLines="3"
@@ -141,7 +141,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Instructions"
+                    android:hint="@string/Instructions"
                     android:id="@+id/instructionsInput"
                     android:inputType="textMultiLine"
                     android:minLines="3"
@@ -153,7 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Generate Recipe with ChatGPT"
+                android:text="@string/Generate_Recipe_with_ChatGPT"
                 app:icon="@drawable/ic_auto_fix"
                 style="@style/Widget.Material3.Button.Icon" />
 
@@ -162,7 +162,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
-                android:text="Publish" />
+                android:text="@string/Publish" />
 
         </LinearLayout>
 
