@@ -75,6 +75,8 @@ class SettingsFragment : Fragment() {
     private fun loadUserProfile() {
         authViewModel.user.value?.uid?.let { userId ->
             Log.d("SettingsFragment", "Loading profile for user: $userId")
+            binding?.progressBar?.visibility = View.VISIBLE
+            binding?.form?.visibility = View.GONE
             Model.shared.getUser(userId) { user ->
                 activity?.runOnUiThread {
                     user?.let {
@@ -94,6 +96,8 @@ class SettingsFragment : Fragment() {
                         }
 
                     } ?: Log.e("SettingsFragment", "User data is null!")
+                    binding?.progressBar?.visibility = View.GONE
+                    binding?.form?.visibility = View.VISIBLE
                 }
             }
         } ?: Log.e("SettingsFragment", "User ID is null, cannot load profile.")
@@ -115,14 +119,28 @@ class SettingsFragment : Fragment() {
 
         binding?.progressBar?.visibility = View.VISIBLE
         binding?.form?.visibility = View.GONE
-        Model.shared.updateUserProfile(authViewModel.user.value!!, newName, newBio, bitmap) {
-            if (it) {
-                Log.d("SettingsFragment", "Profile updated successfully")
-            } else {
-                Log.e("SettingsFragment", "Failed to update profile")
+        if (!didSetProfileImage) {
+            Log.d("SettingsFragment", "No profile image selected, skipping upload")
+            Model.shared.updateUserProfile(authViewModel.user.value!!, newName, newBio, null) {
+                if (it) {
+                    Log.d("SettingsFragment", "Profile updated successfully")
+                } else {
+                    Log.e("SettingsFragment", "Failed to update profile")
+                }
+                binding?.progressBar?.visibility = View.GONE
+                binding?.form?.visibility = View.VISIBLE
             }
-            binding?.progressBar?.visibility = View.GONE
-            binding?.form?.visibility = View.VISIBLE
+        }
+        else {
+            Model.shared.updateUserProfile(authViewModel.user.value!!, newName, newBio, bitmap) {
+                if (it) {
+                    Log.d("SettingsFragment", "Profile updated successfully")
+                } else {
+                    Log.e("SettingsFragment", "Failed to update profile")
+                }
+                binding?.progressBar?.visibility = View.GONE
+                binding?.form?.visibility = View.VISIBLE
+            }
         }
 
     }

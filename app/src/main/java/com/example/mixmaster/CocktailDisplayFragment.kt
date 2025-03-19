@@ -52,7 +52,8 @@ class CocktailDisplayFragment : Fragment() {
     private fun getCocktail() {
         if (cocktailId == null)
             return
-        //binding?.progressBar?.visibility = View.VISIBLE
+        binding?.progressBar?.visibility = View.VISIBLE
+        binding?.content?.visibility = View.GONE
         lifecycleScope.launch {
             try {
                 Log.d("CocktailsFragment", "Fetching ai")
@@ -82,7 +83,8 @@ class CocktailDisplayFragment : Fragment() {
                 Log.e("CocktailsFragment", "Exception fetching random cocktails", e)
             } finally {
                 // Hide progress bar when request finishes.
-                //binding?.progressBar?.visibility = View.GONE
+                binding?.progressBar?.visibility = View.GONE
+                binding?.content?.visibility = View.VISIBLE
             }
         }
     }

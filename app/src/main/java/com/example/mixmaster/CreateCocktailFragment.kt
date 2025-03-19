@@ -146,7 +146,8 @@ class CreateCocktailFragment : Fragment() {
     private fun getCocktail() {
         if (cocktailID == null)
             return
-        //binding?.progressBar?.visibility = View.VISIBLE
+        binding?.progressBar?.visibility = View.VISIBLE
+        binding?.form?.visibility = View.GONE
         lifecycleScope.launch {
             try {
                 Log.d("CocktailsFragment", "Fetching ai")
@@ -169,7 +170,8 @@ class CreateCocktailFragment : Fragment() {
                 Log.e("CocktailsFragment", "Exception fetching random cocktails", e)
             } finally {
                 // Hide progress bar when request finishes.
-                //binding?.progressBar?.visibility = View.GONE
+                binding?.progressBar?.visibility = View.GONE
+                binding?.form?.visibility = View.VISIBLE
             }
         }
     }

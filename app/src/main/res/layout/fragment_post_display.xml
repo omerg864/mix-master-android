@@ -5,9 +5,29 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/content"
         android:orientation="vertical">
 
         <!-- Post Header -->
@@ -82,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Ingredients"
+            android:text="@string/ingredients"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -100,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Instructions"
+            android:text="@string/Instructions"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -130,7 +150,7 @@
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="#6200EE"
                 android:visibility="gone"
-                android:text="Edit"
+                android:text="@string/Edit"
                 android:textAllCaps="false"
                 app:cornerRadius="8dp" />
 
@@ -142,7 +162,7 @@
                 android:layout_marginStart="8dp"
                 android:backgroundTint="#EE0018"
                 android:visibility="gone"
-                android:text="Delete"
+                android:text="@string/Delete"
                 android:textAllCaps="false"
                 app:cornerRadius="8dp" />
 
@@ -150,4 +170,6 @@
 
 
     </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

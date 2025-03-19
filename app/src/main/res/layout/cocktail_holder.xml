@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Cocktail Name"
+            android:text="@string/Cocktail_Name"
             android:textColor="#FFFFFF"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Cocktail description goes here"
+            android:text="@string/Cocktail_description_goes_here"
             android:textColor="#CCCCCC"
             android:textSize="14sp" />
 
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:backgroundTint="#6200EE"
-            android:text="View Details"
+            android:text="@string/View_Details"
             android:textAllCaps="false"
             app:cornerRadius="8dp" />
 
