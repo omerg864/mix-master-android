@@ -142,6 +142,7 @@ class SettingsFragment : Fragment() {
                 binding?.form?.visibility = View.VISIBLE
             }
         }
+        didSetProfileImage = false;
 
     }
     override fun onDestroyView() {
